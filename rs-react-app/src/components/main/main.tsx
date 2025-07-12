@@ -1,8 +1,20 @@
 import { Component } from 'react';
 import './main.css';
-
+import getFirstLoad, { type Pokemon } from '../api/apiHandler';
+interface MainState {
+  pokemons: Pokemon[];
+}
 class Main extends Component {
+  state: MainState = {
+    pokemons: [],
+  };
+  async componentDidMount() {
+    const pokemons = await getFirstLoad();
+    this.setState({ pokemons });
+  }
   render() {
+    const { pokemons } = this.state;
+
     return (
       <main className="main__container">
         <h2 className="main__header">Result</h2>
@@ -12,14 +24,24 @@ class Main extends Component {
             <span className="header__text">Item description</span>
           </div>
           <div className="results__main">
-            <div className="main__item">
-              <div className="item__name-wrapper">
-                <span className="item__name">Item name</span>
+            {pokemons.map((pokemon) => (
+              <div key={pokemon.name} className="main__item">
+                <div className="item__name-wrapper">
+                  <span className="item__name">{pokemon.name}</span>
+                </div>
+                <div className="item__description-wrapper">
+                  <span className="item__description">
+                    <a
+                      href={pokemon.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View details
+                    </a>
+                  </span>
+                </div>
               </div>
-              <div className="item__description-wrapper">
-                <span className="item__description">Item description</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </main>
@@ -28,3 +50,13 @@ class Main extends Component {
 }
 
 export default Main;
+/* 
+            <div className="main__item">
+              <div className="item__name-wrapper">
+                <span className="item__name">Item name</span>
+              </div>
+              <div className="item__description-wrapper">
+                <span className="item__description">Item description</span>
+              </div>
+            </div>
+            */
