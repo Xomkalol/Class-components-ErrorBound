@@ -1,6 +1,6 @@
 .container {
-  width: 80%;
-  height: 80%;
+  width: 95%;
+  height: 95%;
   background-color: var(--bg-primary);
   display: flex;
   justify-content: center;
