@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import './header.css';
+import getItems from '../api/apiHandler';
 
 class Header extends Component {
   render() {
@@ -10,12 +11,17 @@ class Header extends Component {
             <input></input>
           </div>
           <div className="controls__button-wrapper">
-            <button className="controls__button">Search</button>
+            <button className="controls__button" onClick={this.addHandler}>
+              Search
+            </button>
           </div>
         </div>
       </div>
     );
   }
+  addHandler = () => {
+    getItems();
+  };
 }
 
 export default Header;
