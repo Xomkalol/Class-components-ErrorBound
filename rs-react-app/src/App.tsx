@@ -39,7 +39,6 @@ class App extends Component<object, AppState> {
   }
   handleSearch = async (query: string) => {
     if (!query.trim()) {
-      // Если запрос пустой, показываем первоначальные покемоны
       const initialPokemons = await getFirstLoad();
       this.setState({ pokemons: initialPokemons });
       return;

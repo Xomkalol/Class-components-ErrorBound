@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import './main.css';
 import Popout from '../popout/popout';
+import Skeleton from '../skeleton/skeleton';
 
 interface MainProps {
   pokemons: { name: string; url: string }[];
@@ -17,12 +18,23 @@ class Main extends Component<MainProps, MainState> {
     showPopup: false,
     selectedPokemonUrl: '',
   };
+
+  showSkeleton = true;
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.showSkeleton = false;
+      this.forceUpdate();
+    }, 1500);
+  }
+
   handleShowPokemon = (url: string) => {
     this.setState({
       showPopup: true,
       selectedPokemonUrl: url,
     });
   };
+
   handleClosePopup = () => {
     this.setState({ showPopup: false });
   };
@@ -30,10 +42,6 @@ class Main extends Component<MainProps, MainState> {
   render() {
     const { pokemons, isLoading } = this.props;
     const { showPopup, selectedPokemonUrl } = this.state;
-
-    if (isLoading) {
-      return <div className="loading">Loading...</div>;
-    }
 
     return (
       <main className="main__container">
@@ -44,7 +52,9 @@ class Main extends Component<MainProps, MainState> {
             <span className="header__text">Details</span>
           </div>
           <div className="results__main">
-            {pokemons.length > 0 ? (
+            {isLoading || this.showSkeleton ? (
+              <Skeleton count={8} />
+            ) : pokemons.length > 0 ? (
               pokemons.map((pokemon) => (
                 <div key={pokemon.name} className="main__item">
                   <div className="item__name-wrapper">
