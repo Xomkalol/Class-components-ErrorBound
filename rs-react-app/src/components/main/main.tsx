@@ -9,7 +9,7 @@ interface MainState {
 }
 class Main extends Component<object, MainState> {
   state: MainState = {
-    pokemons: [], // Заполните вашими данными
+    pokemons: [],
     showPopup: false,
     selectedPokemonUrl: '',
   };
