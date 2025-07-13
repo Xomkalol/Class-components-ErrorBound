@@ -3,6 +3,7 @@ export interface Pokemon {
   name: string;
   url: string;
 }
+
 export default async function getFirstLoad(): Promise<Pokemon[]> {
   try {
     const response = await fetch(`${apiLink}/pokemon`);

@@ -1,19 +1,33 @@
 import { Component } from 'react';
 import './main.css';
-import getFirstLoad, { type Pokemon } from '../api/apiHandler';
+import getFirstLoad from '../api/apiHandler';
+import Popout from '../popout/popout';
 interface MainState {
-  pokemons: Pokemon[];
+  pokemons: { name: string; url: string }[];
+  showPopup: boolean;
+  selectedPokemonUrl: string;
 }
-class Main extends Component {
+class Main extends Component<object, MainState> {
   state: MainState = {
-    pokemons: [],
+    pokemons: [], // Заполните вашими данными
+    showPopup: false,
+    selectedPokemonUrl: '',
   };
   async componentDidMount() {
     const pokemons = await getFirstLoad();
     this.setState({ pokemons });
   }
+  handleShowPokemon = (url: string) => {
+    this.setState({
+      showPopup: true,
+      selectedPokemonUrl: url,
+    });
+  };
+  handleClosePopup = () => {
+    this.setState({ showPopup: false });
+  };
   render() {
-    const { pokemons } = this.state;
+    const { pokemons, showPopup, selectedPokemonUrl } = this.state;
 
     return (
       <main className="main__container">
@@ -30,33 +44,26 @@ class Main extends Component {
                   <span className="item__name">{pokemon.name}</span>
                 </div>
                 <div className="item__description-wrapper">
-                  <span className="item__description">
-                    <a
-                      href={pokemon.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View details
-                    </a>
+                  <span
+                    className="item__description"
+                    onClick={() => this.handleShowPokemon(pokemon.url)}
+                  >
+                    {pokemon.url}
                   </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
+        {showPopup && (
+          <Popout
+            pokemon={selectedPokemonUrl}
+            onClose={this.handleClosePopup}
+          />
+        )}
       </main>
     );
   }
 }
 
 export default Main;
-/* 
-            <div className="main__item">
-              <div className="item__name-wrapper">
-                <span className="item__name">Item name</span>
-              </div>
-              <div className="item__description-wrapper">
-                <span className="item__description">Item description</span>
-              </div>
-            </div>
-            */
