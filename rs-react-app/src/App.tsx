@@ -9,14 +9,13 @@ import getFirstLoad from './components/api/apiHandler';
 interface AppState {
   pokemons: { name: string; url: string }[];
   isLoading: boolean;
-  error?: string; // Изменяем string | null на optional string
+  error?: string;
 }
 
 class App extends Component<object, AppState> {
   state: AppState = {
     pokemons: [],
     isLoading: true,
-    // error теперь необязательный, можно не инициализировать
   };
 
   async componentDidMount() {
@@ -25,7 +24,7 @@ class App extends Component<object, AppState> {
       this.setState({
         pokemons: initialPokemons,
         isLoading: false,
-        error: undefined, // Используем undefined вместо null
+        error: undefined,
       });
     } catch (error) {
       console.error('Error loading initial pokemons:', error);
