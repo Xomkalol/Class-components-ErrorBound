@@ -79,7 +79,12 @@ class Popout extends Component<PopoutProps, PopoutState> {
         <div className="pop__container" onClick={(e) => e.stopPropagation()}>
           <div className="pop__main">
             <h2 className="pop__header">{this.state.pokemonInfo.name}</h2>
-            <img src={this.state.pokemonInfo.imageUrl}></img>
+            {this.state.pokemonInfo.imageUrl && (
+              <img
+                src={this.state.pokemonInfo.imageUrl}
+                alt={this.state.pokemonInfo.name}
+              />
+            )}
             <ul className="pop__ul">
               <li className="pop__li">
                 Abilities: {this.state.pokemonInfo.abilities}
