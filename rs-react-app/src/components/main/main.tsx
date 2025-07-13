@@ -1,22 +1,21 @@
 import { Component } from 'react';
 import './main.css';
-import getFirstLoad from '../api/apiHandler';
 import Popout from '../popout/popout';
-interface MainState {
+
+interface MainProps {
   pokemons: { name: string; url: string }[];
+}
+
+interface MainState {
   showPopup: boolean;
   selectedPokemonUrl: string;
 }
-class Main extends Component<object, MainState> {
+
+class Main extends Component<MainProps, MainState> {
   state: MainState = {
-    pokemons: [],
     showPopup: false,
     selectedPokemonUrl: '',
   };
-  async componentDidMount() {
-    const pokemons = await getFirstLoad();
-    this.setState({ pokemons });
-  }
   handleShowPokemon = (url: string) => {
     this.setState({
       showPopup: true,
@@ -26,8 +25,10 @@ class Main extends Component<object, MainState> {
   handleClosePopup = () => {
     this.setState({ showPopup: false });
   };
+
   render() {
-    const { pokemons, showPopup, selectedPokemonUrl } = this.state;
+    const { pokemons } = this.props;
+    const { showPopup, selectedPokemonUrl } = this.state;
 
     return (
       <main className="main__container">
@@ -38,21 +39,27 @@ class Main extends Component<object, MainState> {
             <span className="header__text">Item description</span>
           </div>
           <div className="results__main">
-            {pokemons.map((pokemon) => (
-              <div key={pokemon.name} className="main__item">
-                <div className="item__name-wrapper">
-                  <span className="item__name">{pokemon.name}</span>
+            {pokemons.length > 0 ? (
+              pokemons.map((pokemon) => (
+                <div key={pokemon.name} className="main__item">
+                  <div className="item__name-wrapper">
+                    <span className="item__name">{pokemon.name}</span>
+                  </div>
+                  <div className="item__description-wrapper">
+                    <span
+                      className="item__description"
+                      onClick={() => this.handleShowPokemon(pokemon.url)}
+                    >
+                      {pokemon.url}
+                    </span>
+                  </div>
                 </div>
-                <div className="item__description-wrapper">
-                  <span
-                    className="item__description"
-                    onClick={() => this.handleShowPokemon(pokemon.url)}
-                  >
-                    {pokemon.url}
-                  </span>
-                </div>
+              ))
+            ) : (
+              <div className="no-results">
+                No pokemons found. Try searching!
               </div>
-            ))}
+            )}
           </div>
         </div>
         {showPopup && (

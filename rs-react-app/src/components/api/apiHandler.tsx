@@ -1,4 +1,4 @@
-const apiLink: string = 'https://pokeapi.co/api/v2';
+export const apiLink: string = 'https://pokeapi.co/api/v2';
 export interface Pokemon {
   name: string;
   url: string;
