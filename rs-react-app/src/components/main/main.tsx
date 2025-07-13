@@ -4,6 +4,7 @@ import Popout from '../popout/popout';
 
 interface MainProps {
   pokemons: { name: string; url: string }[];
+  isLoading: boolean;
 }
 
 interface MainState {
@@ -27,16 +28,20 @@ class Main extends Component<MainProps, MainState> {
   };
 
   render() {
-    const { pokemons } = this.props;
+    const { pokemons, isLoading } = this.props;
     const { showPopup, selectedPokemonUrl } = this.state;
+
+    if (isLoading) {
+      return <div className="loading">Loading...</div>;
+    }
 
     return (
       <main className="main__container">
-        <h2 className="main__header">Result</h2>
+        <h2 className="main__header">Pokemons</h2>
         <div className="result__wrapper">
           <div className="result__header">
-            <span className="header__text">Item name</span>
-            <span className="header__text">Item description</span>
+            <span className="header__text">Pokemon Name</span>
+            <span className="header__text">Details</span>
           </div>
           <div className="results__main">
             {pokemons.length > 0 ? (
@@ -50,14 +55,14 @@ class Main extends Component<MainProps, MainState> {
                       className="item__description"
                       onClick={() => this.handleShowPokemon(pokemon.url)}
                     >
-                      {pokemon.url}
+                      View details
                     </span>
                   </div>
                 </div>
               ))
             ) : (
               <div className="no-results">
-                No pokemons found. Try searching!
+                No pokemons found. Try a different search.
               </div>
             )}
           </div>

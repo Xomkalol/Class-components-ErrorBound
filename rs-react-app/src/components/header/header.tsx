@@ -42,14 +42,8 @@ class Header extends Component<HeaderProps, HeaderState> {
     );
   }
   searchPokemon = () => {
-    const { searchValue } = this.state;
-    if (searchValue.trim()) {
-      localStorage.setItem('searchValue', searchValue);
-      this.props.onSearch(searchValue);
-    } else {
-      localStorage.setItem('searchValue', searchValue);
-      console.log('Please enter a pokemon name');
-    }
+    this.props.onSearch(this.state.searchValue);
+    localStorage.setItem('searchValue', this.state.searchValue);
   };
 }
 
