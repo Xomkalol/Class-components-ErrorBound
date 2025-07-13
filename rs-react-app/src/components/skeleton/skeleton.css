@@ -1,0 +1,44 @@
+/* skeleton.css */
+.skeleton-container {
+  width: 100%;
+  padding: 1rem;
+}
+
+.skeleton-item {
+  display: flex;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.skeleton-line {
+  height: 20px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-primary),
+    color-mix(in srgb, var(--accent-pink) 10%, var(--bg-primary)),
+    var(--bg-primary)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-line.name {
+  width: 30%;
+}
+
+.skeleton-line.url {
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
