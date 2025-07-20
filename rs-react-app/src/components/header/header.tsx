@@ -22,7 +22,7 @@ class Header extends Component<HeaderProps, HeaderState> {
   }
   render() {
     return (
-      <div className="upper__container">
+      <div className="upper__container" data-testid="upper-container">
         <div className="upper__controls-wrapper">
           <div className="controls__input-wrapper">
             <input
