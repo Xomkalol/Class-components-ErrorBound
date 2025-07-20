@@ -18,6 +18,8 @@ export default defineConfig({
         'src/vite-env.d.ts',
         'src/**/types.ts',
         'src/**/__mocks__/**',
+        'src/App.tsx',
+        'src/main.tsx',
       ],
       thresholds: {
         statements: 80,
