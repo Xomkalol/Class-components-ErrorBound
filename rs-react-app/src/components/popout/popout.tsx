@@ -24,16 +24,6 @@ interface PokemonAbility {
   is_hidden: boolean;
   slot: number;
 }
-/*interface PokemonSprite {
-  back_default?: string;
-  back_female?: string;
-  back_shiny?: string;
-  back_shiny_female?: string;
-  front_default: string;
-  front_female?: string;
-  front_shiny?: string;
-  front_shiny_female?: string;
-} */
 interface PokemonForm {
   name: string;
   url: string;

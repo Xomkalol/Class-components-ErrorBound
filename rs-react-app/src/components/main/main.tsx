@@ -62,7 +62,6 @@ class Main extends Component<MainProps, MainState> {
         <main className="main__container">
           <h2 className="main__header">Pokemons</h2>
 
-          {/* Error Banner */}
           {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
 
           <div className="result__wrapper">
@@ -97,7 +96,6 @@ class Main extends Component<MainProps, MainState> {
             </div>
           </div>
 
-          {/* Test Error Button */}
           <button className="error-button" onClick={this.throwTestError}>
             Simulate Error (Test)
           </button>
