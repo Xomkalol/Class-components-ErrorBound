@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/vitest';
 
 describe('ApiErrorBanner', () => {
   afterEach(() => {
-    cleanup(); // Очищаем DOM после каждого теста
+    cleanup();
   });
 
   it('отображает переданное сообщение об ошибке', () => {
