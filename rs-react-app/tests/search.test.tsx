@@ -26,3 +26,14 @@ describe('Search value update test', () => {
     expect(input.value).toBe(testValue);
   });
 });
+
+describe('Search input updage localStorage test', () => {
+  it('Should update localstorage with enter', () => {
+    const input = screen.getByTestId('search-input') as HTMLInputElement;
+    const testValue = 'pikachu';
+    fireEvent.change(input, { target: { value: testValue } });
+    fireEvent.keyUp(input, { key: 'Enter', code: 'Enter' });
+
+    expect(localStorage.getItem('searchValue')).toBe(testValue);
+  });
+});
