@@ -27,12 +27,23 @@ describe('Search value update test', () => {
   });
 });
 
-describe('Search input updage localStorage test', () => {
+describe('Search input update localStorage test', () => {
   it('Should update localstorage with enter', () => {
     const input = screen.getByTestId('search-input') as HTMLInputElement;
     const testValue = 'pikachu';
     fireEvent.change(input, { target: { value: testValue } });
     fireEvent.keyUp(input, { key: 'Enter', code: 'Enter' });
+
+    expect(localStorage.getItem('searchValue')).toBe(testValue);
+  });
+});
+
+describe('Button update localStorage test', () => {
+  it('Should update localstorage with button', () => {
+    const button = screen.getByTestId('search-button');
+    const testValue = 'pikachu';
+
+    fireEvent.click(button);
 
     expect(localStorage.getItem('searchValue')).toBe(testValue);
   });
