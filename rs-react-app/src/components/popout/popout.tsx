@@ -24,16 +24,6 @@ interface PokemonAbility {
   is_hidden: boolean;
   slot: number;
 }
-/*interface PokemonSprite {
-  back_default?: string;
-  back_female?: string;
-  back_shiny?: string;
-  back_shiny_female?: string;
-  front_default: string;
-  front_female?: string;
-  front_shiny?: string;
-  front_shiny_female?: string;
-} */
 interface PokemonForm {
   name: string;
   url: string;
@@ -74,30 +64,45 @@ class Popout extends Component<PopoutProps, PopoutState> {
     }
   }
   render() {
+    const { pokemonInfo } = this.state;
+
     return (
-      <div className="layout" onClick={this.props.onClose}>
-        <div className="pop__container" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="layout"
+        onClick={this.props.onClose}
+        data-testid="popout-overlay"
+      >
+        <div
+          className="pop__container"
+          onClick={(e) => e.stopPropagation()}
+          data-testid="popout-content"
+        >
           <div className="pop__main">
-            <h2 className="pop__header">{this.state.pokemonInfo.name}</h2>
-            {this.state.pokemonInfo.imageUrl && (
+            <h2 className="pop__header" data-testid="pokemon-name">
+              {pokemonInfo.name}
+            </h2>
+            {pokemonInfo.imageUrl && (
               <img
-                src={this.state.pokemonInfo.imageUrl}
-                alt={this.state.pokemonInfo.name}
+                src={pokemonInfo.imageUrl}
+                alt={pokemonInfo.name}
+                data-testid="pokemon-image"
               />
             )}
             <ul className="pop__ul">
-              <li className="pop__li">
-                Abilities: {this.state.pokemonInfo.abilities}
+              <li className="pop__li" data-testid="pokemon-abilities">
+                Abilities: {pokemonInfo.abilities}
               </li>
-              <li className="pop__li">
-                Forms: {this.state.pokemonInfo.forms.join()}
+              <li className="pop__li" data-testid="pokemon-forms">
+                Forms: {pokemonInfo.forms.join()}
               </li>
-              <li className="pop__li">
-                Species: {this.state.pokemonInfo.species}
+              <li className="pop__li" data-testid="pokemon-species">
+                Species: {pokemonInfo.species}
               </li>
             </ul>
           </div>
-          <button onClick={this.props.onClose}>Закрыть</button>
+          <button onClick={this.props.onClose} data-testid="close-button">
+            Закрыть
+          </button>
         </div>
       </div>
     );
