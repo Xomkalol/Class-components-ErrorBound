@@ -30,10 +30,15 @@ class Header extends Component<HeaderProps, HeaderState> {
               value={this.state.searchValue}
               onChange={(e) => this.setState({ searchValue: e.target.value })}
               onKeyUp={(e) => e.key === 'Enter' && this.searchPokemon()}
+              data-testid="search-input"
             />
           </div>
           <div className="controls__button-wrapper">
-            <button className="controls__button" onClick={this.searchPokemon}>
+            <button
+              className="controls__button"
+              onClick={this.searchPokemon}
+              data-testid="search-button"
+            >
               Search
             </button>
           </div>
