@@ -8,13 +8,16 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       provider: 'v8',
-      include: ['src//*.{js,jsx,ts,tsx}'],
+      include: ['src/components/**/*.{ts,tsx}', 'src/*.{ts,tsx}'],
       exclude: [
-        'src//.test.{js,jsx,ts,tsx}',
-        'src/**/.spec.{js,jsx,ts,tsx}',
+        'src/**/*.test.{js,jsx,ts,tsx}',
+        'src/**/*.spec.{js,jsx,ts,tsx}',
         'src/index.{js,jsx,ts,tsx}',
         'src/setupTests.{js,ts}',
-        'src/*/.d.ts',
+        'src/**/*.d.ts',
+        'src/vite-env.d.ts',
+        'src/**/types.ts',
+        'src/**/__mocks__/**',
       ],
       thresholds: {
         statements: 80,
