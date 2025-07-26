@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Header from './components/header/header';
 import Main from './components/main/main';
 import ErrorBoundary from './components/errorBoundary/errorBoundary';
@@ -6,111 +6,90 @@ import './app.css';
 import searchPokemon from './components/header/headerHandler';
 import getFirstLoad from './components/api/apiHandler';
 
-interface AppState {
-  pokemons: { name: string; url: string }[];
-  isLoading: boolean;
-  error?: string;
-}
+export default function App() {
+  const [pokemons, setPokemons] = useState<{ name: string; url: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | undefined>(undefined);
 
-class App extends Component<object, AppState> {
-  state: AppState = {
-    pokemons: [],
-    isLoading: true,
-  };
-
-  async componentDidMount() {
+  const fetchInitialPokemons = useCallback(async () => {
     try {
+      setIsLoading(true);
       const initialPokemons = await getFirstLoad();
-      this.setState({
-        pokemons: initialPokemons,
-        isLoading: false,
-        error: undefined,
-      });
-    } catch (error) {
-      console.error('Error loading initial pokemons:', error);
-      this.setState({
-        isLoading: false,
-        error: 'Failed to load pokemons. Please try again later.',
-      });
+      setPokemons(initialPokemons);
+      setIsLoading(false);
+      setError(undefined);
+    } catch (err) {
+      console.error('Error loading initial pokemons:', err);
+      setIsLoading(false);
+      setError('Failed to load pokemons. Please try again later.');
     }
-  }
+  }, []);
 
-  handleSearch = async (query: string) => {
+  useEffect(() => {
+    fetchInitialPokemons();
+  }, [fetchInitialPokemons]);
+
+  const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       try {
-        this.setState({ isLoading: true });
+        setIsLoading(true);
         const initialPokemons = await getFirstLoad();
-        this.setState({
-          pokemons: initialPokemons,
-          isLoading: false,
-          error: undefined,
-        });
-      } catch (error) {
-        this.setState({
-          isLoading: false,
-          error: 'Failed to load pokemons. Please try again.',
-        });
-        console.log(error);
+        setPokemons(initialPokemons);
+        setIsLoading(false);
+        setError(undefined);
+      } catch (err) {
+        setIsLoading(false);
+        setError('Failed to load pokemons. Please try again.');
+        console.log(err);
       }
       return;
     }
 
-    this.setState({ isLoading: true, error: undefined });
+    setIsLoading(true);
+    setError(undefined);
+
     try {
       const pokemonData = await searchPokemon(query);
       if (pokemonData) {
-        this.setState({
-          pokemons: [
-            {
-              name: pokemonData.name,
-              url:
-                pokemonData.url ||
-                `https://pokeapi.co/api/v2/pokemon/${pokemonData.id}/`,
-            },
-          ],
-          isLoading: false,
-          error: undefined,
-        });
+        setPokemons([
+          {
+            name: pokemonData.name,
+            url:
+              pokemonData.url ||
+              `https://pokeapi.co/api/v2/pokemon/${pokemonData.id}/`,
+          },
+        ]);
+        setIsLoading(false);
+        setError(undefined);
       } else {
-        this.setState({
-          pokemons: [],
-          isLoading: false,
-          error: 'Pokemon not found. Try another name.',
-        });
+        setPokemons([]);
+        setIsLoading(false);
+        setError('Pokemon not found. Try another name.');
       }
-    } catch (error) {
-      console.error('Search error:', error);
-      this.setState({
-        pokemons: [],
-        isLoading: false,
-        error: 'Search failed. Please check your connection and try again.',
-      });
+    } catch (err) {
+      console.error('Search error:', err);
+      setPokemons([]);
+      setIsLoading(false);
+      setError('Search failed. Please check your connection and try again.');
     }
-  };
+  }, []);
 
-  handleRetry = () => {
-    this.setState({ error: undefined }, () => {
-      this.handleSearch('');
-    });
-  };
+  const handleRetry = useCallback(() => {
+    setError(undefined);
+    handleSearch('');
+  }, [handleSearch]);
 
-  render() {
-    const { pokemons, isLoading, error } = this.state;
-
-    return (
-      <div className="app">
-        <ErrorBoundary>
-          <Header onSearch={this.handleSearch} />
-          <Main
-            pokemons={pokemons}
-            isLoading={isLoading}
-            error={error}
-            onRetry={this.handleRetry}
-          />
-        </ErrorBoundary>
-      </div>
-    );
-  }
+  return (
+    <div className="app">
+      <ErrorBoundary>
+        <Header onSearch={handleSearch} />
+        <Main
+          pokemons={pokemons}
+          isLoading={isLoading}
+          error={error}
+          onRetry={handleRetry}
+        />
+      </ErrorBoundary>
+    </div>
+  );
 }
-
-export default App;
