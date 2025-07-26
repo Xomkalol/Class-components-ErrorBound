@@ -38,10 +38,6 @@ export default function Main({
     setShowPopup(false);
   };
 
-  const throwTestError = () => {
-    sethasError(true);
-  };
-
   if (hasError) {
     throw new Error('Test error triggered by button');
   }
@@ -84,10 +80,6 @@ export default function Main({
             )}
           </div>
         </div>
-
-        <button className="error-button" onClick={throwTestError}>
-          Simulate Error (Test)
-        </button>
 
         {showPopup && (
           <Popout pokemon={selectedPokemonUrl} onClose={handleClosePopup} />
