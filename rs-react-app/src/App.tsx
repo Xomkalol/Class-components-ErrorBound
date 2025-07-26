@@ -12,7 +12,7 @@ export default function App() {
   const [error, setError] = useState<string | undefined>(undefined);
   // const [searchMode, setSearchMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [currentOffset, setCurrentOffset] = useState(20);
+  const [currentOffset, setCurrentOffset] = useState(0);
 
   const fetchInitialPokemons = useCallback(async () => {
     try {
@@ -82,11 +82,11 @@ export default function App() {
     handleSearch('');
   }, [handleSearch]);
 
-  const fetchPaginationPokemons = useCallback(async () => {
+  const fetchPaginationPokemons = useCallback(async (offset: number) => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `${apiLink}/pokemon/?limit=20&offset=${currentOffset}`
+        `${apiLink}/pokemon/?limit=20&offset=${offset}`
       );
       const data = await response.json();
       setIsLoading(false);
@@ -96,21 +96,22 @@ export default function App() {
       setIsLoading(false);
       setError('Pokemon not found. Try another name.');
     }
-  }, [currentOffset]);
+  }, []);
 
   const nextPageHandler = useCallback(() => {
+    const showOffset = currentOffset + 20;
     setCurrentPage(currentPage + 1);
-    console.log(`current page is ${currentPage}`);
-    fetchPaginationPokemons();
+    fetchPaginationPokemons(showOffset);
     setCurrentOffset(currentOffset + 20);
     console.log(currentOffset);
   }, [currentOffset, currentPage, fetchPaginationPokemons]);
 
   const prevPageHandler = useCallback(() => {
+    const showOffset = currentOffset - 20;
     if (currentOffset >= 0) {
       setCurrentPage(currentPage - 1);
       console.log(currentPage);
-      fetchPaginationPokemons();
+      fetchPaginationPokemons(showOffset);
       setCurrentOffset(currentOffset - 20);
       console.log(currentOffset);
     }
@@ -127,6 +128,7 @@ export default function App() {
           onRetry={handleRetry}
           nextPageHandler={nextPageHandler}
           prevPageHandler={prevPageHandler}
+          currentOffset={currentOffset}
         />
       </ErrorBoundary>
     </div>

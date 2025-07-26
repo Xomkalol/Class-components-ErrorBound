@@ -12,6 +12,7 @@ interface MainProps {
   onRetry?: () => void;
   nextPageHandler: () => void;
   prevPageHandler: () => void;
+  currentOffset: number;
 }
 
 export default function Main({
@@ -21,6 +22,7 @@ export default function Main({
   onRetry,
   nextPageHandler,
   prevPageHandler,
+  currentOffset,
 }: MainProps) {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
@@ -79,8 +81,15 @@ export default function Main({
             )}
           </div>
         </div>
-        <button onClick={() => prevPageHandler()}>Show prev</button>
-        <button onClick={() => nextPageHandler()}>Show next</button>
+        <button
+          onClick={() => prevPageHandler()}
+          disabled={currentOffset === 0 || isLoading}
+        >
+          Show prev
+        </button>
+        <button onClick={() => nextPageHandler()} disabled={isLoading}>
+          Show next
+        </button>
         {showPopup && (
           <Popout pokemon={selectedPokemonUrl} onClose={handleClosePopup} />
         )}
