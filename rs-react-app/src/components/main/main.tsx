@@ -10,6 +10,8 @@ interface MainProps {
   isLoading: boolean;
   error?: string;
   onRetry?: () => void;
+  nextPageHandler: () => void;
+  prevPageHandler: () => void;
 }
 
 export default function Main({
@@ -17,11 +19,12 @@ export default function Main({
   isLoading,
   error,
   onRetry,
+  nextPageHandler,
+  prevPageHandler,
 }: MainProps) {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
-  const [hasError, sethasError] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -37,10 +40,6 @@ export default function Main({
   const handleClosePopup = () => {
     setShowPopup(false);
   };
-
-  if (hasError) {
-    throw new Error('Test error triggered by button');
-  }
 
   return (
     <ErrorBoundary>
@@ -80,7 +79,8 @@ export default function Main({
             )}
           </div>
         </div>
-
+        <button onClick={() => prevPageHandler()}>Show prev</button>
+        <button onClick={() => nextPageHandler()}>Show next</button>
         {showPopup && (
           <Popout pokemon={selectedPokemonUrl} onClose={handleClosePopup} />
         )}

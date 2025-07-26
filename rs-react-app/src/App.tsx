@@ -4,12 +4,15 @@ import Main from './components/main/main';
 import ErrorBoundary from './components/errorBoundary/errorBoundary';
 import './app.css';
 import searchPokemon from './components/header/headerHandler';
-import getFirstLoad from './components/api/apiHandler';
+import getFirstLoad, { apiLink } from './components/api/apiHandler';
 
 export default function App() {
   const [pokemons, setPokemons] = useState<{ name: string; url: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
+  // const [searchMode, setSearchMode] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentOffset, setCurrentOffset] = useState(20);
 
   const fetchInitialPokemons = useCallback(async () => {
     try {
@@ -79,6 +82,40 @@ export default function App() {
     handleSearch('');
   }, [handleSearch]);
 
+  const fetchPaginationPokemons = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${apiLink}/pokemon/?limit=20&offset=${currentOffset}`
+      );
+      const data = await response.json();
+      setIsLoading(false);
+      setPokemons(data.results);
+    } catch {
+      setPokemons([]);
+      setIsLoading(false);
+      setError('Pokemon not found. Try another name.');
+    }
+  }, [currentOffset]);
+
+  const nextPageHandler = useCallback(() => {
+    setCurrentPage(currentPage + 1);
+    console.log(`current page is ${currentPage}`);
+    fetchPaginationPokemons();
+    setCurrentOffset(currentOffset + 20);
+    console.log(currentOffset);
+  }, [currentOffset, currentPage, fetchPaginationPokemons]);
+
+  const prevPageHandler = useCallback(() => {
+    if (currentOffset >= 0) {
+      setCurrentPage(currentPage - 1);
+      console.log(currentPage);
+      fetchPaginationPokemons();
+      setCurrentOffset(currentOffset - 20);
+      console.log(currentOffset);
+    }
+  }, [currentOffset, currentPage, fetchPaginationPokemons]);
+
   return (
     <div className="app">
       <ErrorBoundary>
@@ -88,6 +125,8 @@ export default function App() {
           isLoading={isLoading}
           error={error}
           onRetry={handleRetry}
+          nextPageHandler={nextPageHandler}
+          prevPageHandler={prevPageHandler}
         />
       </ErrorBoundary>
     </div>
