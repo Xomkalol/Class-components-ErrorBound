@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import './main.css';
 import Popout from '../popout/popout';
 import Skeleton from '../skeleton/skeleton';
@@ -12,104 +12,87 @@ interface MainProps {
   onRetry?: () => void;
 }
 
-interface MainState {
-  showPopup: boolean;
-  selectedPokemonUrl: string;
-  showSkeleton: boolean;
-  hasError: boolean;
-}
+export default function Main({
+  pokemons,
+  isLoading,
+  error,
+  onRetry,
+}: MainProps) {
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
+  const [showSkeleton, setshowSkeleton] = useState(true);
+  const [hasError, sethasError] = useState(false);
 
-class Main extends Component<MainProps, MainState> {
-  state: MainState = {
-    showPopup: false,
-    selectedPokemonUrl: '',
-    showSkeleton: true,
-    hasError: false,
-  };
-
-  componentDidMount() {
+  useEffect(() => {
     setTimeout(() => {
-      this.setState({ showSkeleton: false });
+      setshowSkeleton(false);
     }, 1500);
+  }, []);
+
+  const handleShowPokemon = (url: string) => {
+    setselectedPokemonUrl(url);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+  const throwTestError = () => {
+    sethasError(true);
+  };
+
+  if (hasError) {
+    throw new Error('Test error triggered by button');
   }
 
-  handleShowPokemon = (url: string) => {
-    this.setState({
-      showPopup: true,
-      selectedPokemonUrl: url,
-    });
-  };
+  return (
+    <ErrorBoundary>
+      <main className="main__container">
+        <h2 className="main__header">Pokemons</h2>
 
-  handleClosePopup = () => {
-    this.setState({ showPopup: false });
-  };
+        {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
 
-  throwTestError = () => {
-    this.setState({ hasError: true });
-  };
-
-  render() {
-    const { pokemons, isLoading, error, onRetry } = this.props;
-    const { showPopup, selectedPokemonUrl, showSkeleton, hasError } =
-      this.state;
-
-    if (hasError) {
-      throw new Error('Test error triggered by button');
-    }
-
-    return (
-      <ErrorBoundary>
-        <main className="main__container">
-          <h2 className="main__header">Pokemons</h2>
-
-          {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
-
-          <div className="result__wrapper">
-            <div className="result__header">
-              <span className="header__text">Pokemon Name</span>
-              <span className="header__text">Details</span>
-            </div>
-            <div className="results__main">
-              {isLoading || showSkeleton ? (
-                <Skeleton count={8} />
-              ) : pokemons.length > 0 ? (
-                pokemons.map((pokemon) => (
-                  <div key={pokemon.name} className="main__item">
-                    <div className="item__name-wrapper">
-                      <span className="item__name">{pokemon.name}</span>
-                    </div>
-                    <div className="item__description-wrapper">
-                      <span
-                        className="item__description"
-                        onClick={() => this.handleShowPokemon(pokemon.url)}
-                      >
-                        View details
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="no-results">
-                  No pokemons found. Try a different search.
-                </div>
-              )}
-            </div>
+        <div className="result__wrapper">
+          <div className="result__header">
+            <span className="header__text">Pokemon Name</span>
+            <span className="header__text">Details</span>
           </div>
+          <div className="results__main">
+            {isLoading || showSkeleton ? (
+              <Skeleton count={8} />
+            ) : pokemons.length > 0 ? (
+              pokemons.map((pokemon) => (
+                <div key={pokemon.name} className="main__item">
+                  <div className="item__name-wrapper">
+                    <span className="item__name">{pokemon.name}</span>
+                  </div>
+                  <div className="item__description-wrapper">
+                    <span
+                      className="item__description"
+                      onClick={() => handleShowPokemon(pokemon.url)}
+                    >
+                      View details
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-results">
+                No pokemons found. Try a different search.
+              </div>
+            )}
+          </div>
+        </div>
 
-          <button className="error-button" onClick={this.throwTestError}>
-            Simulate Error (Test)
-          </button>
+        <button className="error-button" onClick={throwTestError}>
+          Simulate Error (Test)
+        </button>
 
-          {showPopup && (
-            <Popout
-              pokemon={selectedPokemonUrl}
-              onClose={this.handleClosePopup}
-            />
-          )}
-        </main>
-      </ErrorBoundary>
-    );
-  }
+        {showPopup && (
+          <Popout pokemon={selectedPokemonUrl} onClose={handleClosePopup} />
+        )}
+      </main>
+    </ErrorBoundary>
+  );
 }
-
-export default Main;
