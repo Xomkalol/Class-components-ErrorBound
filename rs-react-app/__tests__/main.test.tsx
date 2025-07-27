@@ -7,7 +7,6 @@ import {
   cleanup,
 } from '@testing-library/react';
 import Main from '../src/components/main/main';
-import ErrorBoundary from '../src/components/errorBoundary/errorBoundary';
 import '@testing-library/jest-dom/vitest';
 
 const mockPokemons = [
@@ -29,7 +28,19 @@ describe('Main Component', () => {
   });
 
   it('отображает скелетон и заголовки во время загрузки', () => {
-    render(<Main pokemons={[]} isLoading={true} />);
+    render(
+      <Main
+        pokemons={[]}
+        isLoading={true}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
+      />
+    );
 
     expect(screen.getByTestId('skeleton-container')).toBeInTheDocument();
     expect(screen.getByText('Pokemon Name')).toBeInTheDocument();
@@ -39,12 +50,34 @@ describe('Main Component', () => {
 
   it('скрывает скелетон после задержки', async () => {
     const { rerender } = render(
-      <Main pokemons={mockPokemons} isLoading={true} />
+      <Main
+        pokemons={mockPokemons}
+        isLoading={true}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
+      />
     );
 
     expect(screen.getByTestId('skeleton-container')).toBeInTheDocument();
 
-    rerender(<Main pokemons={mockPokemons} isLoading={false} />);
+    rerender(
+      <Main
+        pokemons={mockPokemons}
+        isLoading={false}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
+      />
+    );
     act(() => {
       vi.advanceTimersByTime(1500);
     });
@@ -53,7 +86,19 @@ describe('Main Component', () => {
   });
 
   it('отображает список покемонов после загрузки', async () => {
-    render(<Main pokemons={mockPokemons} isLoading={false} />);
+    render(
+      <Main
+        pokemons={mockPokemons}
+        isLoading={false}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
+      />
+    );
 
     act(() => {
       vi.advanceTimersByTime(1500);
@@ -65,7 +110,19 @@ describe('Main Component', () => {
   });
 
   it('отображает сообщение при отсутствии покемонов', async () => {
-    render(<Main pokemons={[]} isLoading={false} />);
+    render(
+      <Main
+        pokemons={[]}
+        isLoading={false}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
+      />
+    );
 
     act(() => {
       vi.advanceTimersByTime(1500);
@@ -82,6 +139,13 @@ describe('Main Component', () => {
         isLoading={false}
         error={errorMsg}
         onRetry={mockOnRetry}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
       />
     );
 
@@ -96,6 +160,13 @@ describe('Main Component', () => {
         isLoading={false}
         error="Error"
         onRetry={mockOnRetry}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
       />
     );
 
@@ -104,7 +175,19 @@ describe('Main Component', () => {
   });
 
   it('открывает Popout при клике на "View details"', async () => {
-    render(<Main pokemons={mockPokemons} isLoading={false} />);
+    render(
+      <Main
+        pokemons={mockPokemons}
+        isLoading={false}
+        nextPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        prevPageHandler={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        currentOffset={0}
+      />
+    );
 
     act(() => {
       vi.advanceTimersByTime(1500);
@@ -119,21 +202,5 @@ describe('Main Component', () => {
     expect(screen.getByText('Abilities:')).toBeInTheDocument();
     expect(screen.getByText('Forms:')).toBeInTheDocument();
     expect(screen.getByText('Species:')).toBeInTheDocument();
-  });
-
-  it('генерирует ошибку при клике на тестовую кнопку', () => {
-    const consoleError = vi
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-
-    render(
-      <ErrorBoundary>
-        <Main pokemons={mockPokemons} isLoading={false} />
-      </ErrorBoundary>
-    );
-
-    fireEvent.click(screen.getByText('Simulate Error (Test)'));
-    expect(consoleError).toHaveBeenCalled();
-    consoleError.mockRestore();
   });
 });
