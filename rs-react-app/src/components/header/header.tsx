@@ -1,25 +1,15 @@
-import { useEffect, useState } from 'react';
 import './header.css';
+import { useLocalStorage } from '../localStorageHook/useLocalStorage';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
 }
 
 export default function Header({ onSearch }: HeaderProps) {
-  const [searchValue, setSearchValue] = useState('');
-
-  useEffect(() => {
-    const savedValue = localStorage.getItem('searchValue');
-    if (savedValue) {
-      setSearchValue(savedValue);
-      onSearch(savedValue);
-      localStorage.setItem('searchValue', savedValue);
-    }
-  }, [onSearch]);
+  const [searchValue, setSearchValue] = useLocalStorage('searchValue', '');
 
   const handleSearch = () => {
     onSearch(searchValue);
-    localStorage.setItem('searchValue', searchValue);
   };
 
   return (
