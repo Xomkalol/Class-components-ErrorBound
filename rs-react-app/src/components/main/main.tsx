@@ -47,7 +47,6 @@ export default function Main({
   const handleShowPokemon = (url: string) => {
     const match = url.match(/\/(\d+)\/?$/);
     const pokemonId = match ? match[1] : null;
-    console.log(pokemonId);
     navigate(`/pokemon/${pokemonId}?${searchParams.toString()}`);
     setselectedPokemonUrl(url);
   };

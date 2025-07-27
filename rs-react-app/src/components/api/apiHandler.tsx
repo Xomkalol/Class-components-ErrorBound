@@ -11,7 +11,6 @@ export default async function getFirstLoad(): Promise<Pokemon[]> {
     const savedValue = localStorage.getItem('searchValue');
     if (savedValue) {
       const pokemonData = await searchPokemon(savedValue);
-      console.log('Данные searchPokemon:', pokemonData);
       return [
         {
           name: pokemonData.name,
@@ -21,7 +20,6 @@ export default async function getFirstLoad(): Promise<Pokemon[]> {
     } else {
       const response = await fetch(`${apiLink}/pokemon`);
       const data = await response.json();
-      console.log('Данные от API:', data.results);
       return data.results;
     }
   } catch (err) {
