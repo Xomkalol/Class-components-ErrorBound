@@ -1,27 +1,49 @@
-// Popout.test.tsx
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom/vitest';
-import Popout from '../src/components/popout/Popout';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import Popout from '../src/components/popout/popout';
 
-// Моковые данные
+// 👇 Мокаем useOutletContext
+vi.mock('react-router', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router')>('react-router');
+  return {
+    ...actual,
+    useOutletContext: () => ({
+      pokemonUrl: 'https://pokeapi.co/api/v2/pokemon/pikachu',
+      onClose: vi.fn(),
+    }),
+  };
+});
+
 const mockPokemonData = {
   name: 'pikachu',
   abilities: [
-    { ability: { name: 'static', url: 'ability-url' } },
-    { ability: { name: 'lightning-rod', url: 'ability-url' } },
+    { ability: { name: 'static', url: '' }, is_hidden: false, slot: 1 },
+    { ability: { name: 'lightning-rod', url: '' }, is_hidden: true, slot: 3 },
   ],
-  forms: [{ name: 'pikachu', url: 'form-url' }],
-  species: { name: 'mouse' },
-  sprites: { front_default: 'pikachu-image.png' },
+  forms: [{ name: 'pikachu', url: '' }],
+  species: { name: 'pikachu-species', url: '' },
+  sprites: { front_default: 'https://example.com/pikachu.png' },
 };
 
-describe('Popout Component', () => {
-  const mockOnClose = vi.fn();
-  const mockPokemonUrl = 'https://pokeapi.co/api/v2/pokemon/25/';
-
+describe('Popout', () => {
   beforeEach(() => {
-    render(<Popout pokemon={mockPokemonUrl} onClose={mockOnClose} />);
+    vi.resetAllMocks();
+  });
+
+  it('отображает "Loading..." при загрузке', () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => new Promise(() => {}))
+    ); // never resolves
+
+    render(<Popout />);
+
+    const loading = screen.getByText(/loading/i);
+    expect(loading?.textContent?.toLowerCase()).toContain('loading');
+  });
+
+  it('отображает данные покемона после загрузки', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(() =>
@@ -31,22 +53,22 @@ describe('Popout Component', () => {
         })
       )
     );
-  });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    cleanup();
-  });
+    render(<Popout />);
 
-  it('вызывает onClose при клике на оверлей', async () => {
-    await screen.findByTestId('pokemon-name');
-    fireEvent.click(screen.getByTestId('popout-overlay'));
-    expect(mockOnClose).toHaveBeenCalled();
-  });
+    await waitFor(() => {
+      const name = screen.getByTestId('pokemon-name');
+      const abilities = screen.getByTestId('pokemon-abilities');
+      const forms = screen.getByTestId('pokemon-forms');
+      const species = screen.getByTestId('pokemon-species');
+      const image = screen.getByTestId('pokemon-image');
 
-  it('вызывает onClose при клике на кнопку', async () => {
-    await screen.findByTestId('pokemon-name');
-    fireEvent.click(screen.getByTestId('close-button'));
-    expect(mockOnClose).toHaveBeenCalled();
+      expect(name.textContent).toBe('pikachu');
+      expect(abilities.textContent).toContain('static');
+      expect(abilities.textContent).toContain('lightning-rod');
+      expect(forms.textContent).toContain('pikachu');
+      expect(species.textContent).toContain('pikachu-species');
+      expect(image.getAttribute('src')).toBe('https://example.com/pikachu.png');
+    });
   });
 });

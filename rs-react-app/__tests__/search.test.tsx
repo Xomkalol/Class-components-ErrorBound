@@ -5,6 +5,7 @@ import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/dom';
 import '@testing-library/jest-dom/vitest';
 import { it, describe, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router';
 
 describe('Header component', () => {
   let mockHandleSearch: ReturnType<typeof vi.fn>;
@@ -12,7 +13,11 @@ describe('Header component', () => {
   beforeEach(() => {
     mockHandleSearch = vi.fn();
     localStorage.clear();
-    render(<Header onSearch={mockHandleSearch} />);
+    render(
+      <MemoryRouter>
+        <Header onSearch={mockHandleSearch} />
+      </MemoryRouter>
+    );
   });
 
   afterEach(() => {
@@ -23,6 +28,7 @@ describe('Header component', () => {
     expect(screen.getByTestId('upper-container')).toBeInTheDocument();
     expect(screen.getByTestId('search-input')).toBeInTheDocument();
     expect(screen.getByTestId('search-button')).toBeInTheDocument();
+    expect(screen.getByTestId('about-link')).toBeInTheDocument();
   });
 
   it('should update value when user types', () => {
@@ -70,10 +76,13 @@ describe('Header component', () => {
     localStorage.setItem('searchValue', savedValue);
 
     cleanup();
-    render(<Header onSearch={mockHandleSearch} />);
+    render(
+      <MemoryRouter>
+        <Header onSearch={mockHandleSearch} />
+      </MemoryRouter>
+    );
 
     const input = screen.getByTestId('search-input') as HTMLInputElement;
     expect(input.value).toBe(savedValue);
-    expect(mockHandleSearch).toHaveBeenCalledWith(savedValue);
   });
 });

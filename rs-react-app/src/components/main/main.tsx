@@ -1,115 +1,130 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import './main.css';
-import Popout from '../popout/popout';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
+import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
+import { apiLink } from '../api/apiHandler';
 
 interface MainProps {
   pokemons: { name: string; url: string }[];
   isLoading: boolean;
   error?: string;
   onRetry?: () => void;
+  nextPageHandler: () => void;
+  prevPageHandler: () => void;
+  currentOffset: number;
 }
 
-interface MainState {
-  showPopup: boolean;
-  selectedPokemonUrl: string;
-  showSkeleton: boolean;
-  hasError: boolean;
-}
+export default function Main({
+  pokemons,
+  isLoading,
+  error,
+  onRetry,
+  nextPageHandler,
+  prevPageHandler,
+  currentOffset,
+}: MainProps) {
+  const { pokemonId } = useParams();
+  const [searchParams] = useSearchParams();
 
-class Main extends Component<MainProps, MainState> {
-  state: MainState = {
-    showPopup: false,
-    selectedPokemonUrl: '',
-    showSkeleton: true,
-    hasError: false,
-  };
-
-  componentDidMount() {
+  const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
+  const [showSkeleton, setshowSkeleton] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
     setTimeout(() => {
-      this.setState({ showSkeleton: false });
+      setshowSkeleton(false);
     }, 1500);
-  }
+  }, []);
 
-  handleShowPokemon = (url: string) => {
-    this.setState({
-      showPopup: true,
-      selectedPokemonUrl: url,
-    });
-  };
-
-  handleClosePopup = () => {
-    this.setState({ showPopup: false });
-  };
-
-  throwTestError = () => {
-    this.setState({ hasError: true });
-  };
-
-  render() {
-    const { pokemons, isLoading, error, onRetry } = this.props;
-    const { showPopup, selectedPokemonUrl, showSkeleton, hasError } =
-      this.state;
-
-    if (hasError) {
-      throw new Error('Test error triggered by button');
+  useEffect(() => {
+    if (pokemonId) {
+      const url = `${apiLink}/pokemon/${pokemonId}`;
+      setselectedPokemonUrl(url);
     }
+  }, [pokemonId]);
 
-    return (
-      <ErrorBoundary>
-        <main className="main__container">
-          <h2 className="main__header">Pokemons</h2>
+  const handleShowPokemon = (url: string) => {
+    const match = url.match(/\/(\d+)\/?$/);
+    const pokemonId = match ? match[1] : null;
+    navigate(`/pokemon/${pokemonId}?${searchParams.toString()}`);
+    setselectedPokemonUrl(url);
+  };
 
-          {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
+  const handleNextPaginationButton = () => {
+    const newOffset = currentOffset + 20;
+    nextPageHandler();
+    searchParams.set('offset', newOffset.toString());
+    navigate(`/?${searchParams.toString()}`);
+  };
+  const handlePrevPaginationButton = () => {
+    const newOffset = Math.max(currentOffset - 20, 0);
+    prevPageHandler();
+    searchParams.set('offset', newOffset.toString());
+    navigate(`/?${searchParams.toString()}`);
+  };
+  return (
+    <ErrorBoundary>
+      <main className="main__container">
+        <h2 className="main__header">Pokemons</h2>
 
-          <div className="result__wrapper">
-            <div className="result__header">
-              <span className="header__text">Pokemon Name</span>
-              <span className="header__text">Details</span>
-            </div>
-            <div className="results__main">
-              {isLoading || showSkeleton ? (
-                <Skeleton count={8} />
-              ) : pokemons.length > 0 ? (
-                pokemons.map((pokemon) => (
-                  <div key={pokemon.name} className="main__item">
-                    <div className="item__name-wrapper">
-                      <span className="item__name">{pokemon.name}</span>
-                    </div>
-                    <div className="item__description-wrapper">
-                      <span
-                        className="item__description"
-                        onClick={() => this.handleShowPokemon(pokemon.url)}
-                      >
-                        View details
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="no-results">
-                  No pokemons found. Try a different search.
-                </div>
-              )}
-            </div>
+        {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
+
+        <div className="result__wrapper">
+          <div className="result__header">
+            <span className="header__text">Pokemon Name</span>
+            <span className="header__text">Details</span>
           </div>
-
-          <button className="error-button" onClick={this.throwTestError}>
-            Simulate Error (Test)
+          <div className="results__main">
+            {isLoading || showSkeleton ? (
+              <Skeleton count={8} />
+            ) : pokemons.length > 0 ? (
+              pokemons.map((pokemon) => (
+                <div key={pokemon.name} className="main__item">
+                  <div className="item__name-wrapper">
+                    <span className="item__name">{pokemon.name}</span>
+                  </div>
+                  <div className="item__description-wrapper">
+                    <span
+                      className="item__description"
+                      onClick={() => handleShowPokemon(pokemon.url)}
+                    >
+                      View details
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-results">
+                No pokemons found. Try a different search.
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="button-wrapper">
+          <button
+            onClick={() => handlePrevPaginationButton()}
+            disabled={currentOffset === 0 || isLoading}
+          >
+            Show prev
           </button>
+          <button
+            onClick={() => handleNextPaginationButton()}
+            disabled={isLoading}
+          >
+            Show next
+          </button>
+        </div>
 
-          {showPopup && (
-            <Popout
-              pokemon={selectedPokemonUrl}
-              onClose={this.handleClosePopup}
-            />
-          )}
-        </main>
-      </ErrorBoundary>
-    );
-  }
+        <Outlet
+          context={{
+            pokemonUrl: selectedPokemonUrl,
+            onClose: () => {
+              navigate(`/?${searchParams.toString()}`);
+            },
+          }}
+        />
+      </main>
+    </ErrorBoundary>
+  );
 }
-
-export default Main;
