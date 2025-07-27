@@ -4,6 +4,8 @@ import Popout from '../popout/popout';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
+import { useNavigate, useParams } from 'react-router';
+import { apiLink } from '../api/apiHandler';
 
 interface MainProps {
   pokemons: { name: string; url: string }[];
@@ -24,9 +26,11 @@ export default function Main({
   prevPageHandler,
   currentOffset,
 }: MainProps) {
+  const { pokemonId } = useParams();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => {
@@ -34,14 +38,38 @@ export default function Main({
     }, 1500);
   }, []);
 
+  useEffect(() => {
+    if (pokemonId) {
+      const url = `${apiLink}/pokemon/${pokemonId}`;
+      setselectedPokemonUrl(url);
+      setShowPopup(true);
+    }
+  }, [pokemonId]);
+
   const handleShowPokemon = (url: string) => {
+    const match = url.match(/\/(\d+)\/?$/);
+    const pokemonId = match ? match[1] : null;
+    console.log(pokemonId);
+    navigate(`/pokemon/${pokemonId}`);
     setselectedPokemonUrl(url);
     setShowPopup(true);
   };
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    navigate(`/`);
   };
+
+  useEffect(() => {
+    const handleBackButton = () => {
+      if (showPopup) {
+        setShowPopup(false);
+      }
+    };
+
+    window.addEventListener('popstate', handleBackButton);
+    return () => window.removeEventListener('popstate', handleBackButton);
+  }, [showPopup]);
 
   return (
     <ErrorBoundary>

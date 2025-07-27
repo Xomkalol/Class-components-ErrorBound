@@ -11,6 +11,13 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
   },
+  {
+    path: '/pokemon/:pokemonId',
+    element: <App />,
+    loader: async ({ params }) => {
+      return { pokemonId: params.pokemonId };
+    },
+  },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
