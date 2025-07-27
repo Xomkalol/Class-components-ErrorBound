@@ -14,9 +14,6 @@ export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialOffset = parseInt(searchParams.get('offset') || '0', 10);
   const [currentOffset, setCurrentOffset] = useState(initialOffset);
-  const [currentPage, setCurrentPage] = useState(
-    Math.floor(initialOffset / 20)
-  );
 
   const fetchInitialPokemons = useCallback(async (offset: number) => {
     try {
@@ -90,22 +87,6 @@ export default function App() {
     setError(undefined);
     handleSearch('');
   }, [handleSearch]);
-
-  /* const fetchPaginationPokemons = useCallback(async (offset: number) => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `${apiLink}/pokemon/?limit=20&offset=${offset}`
-      );
-      const data = await response.json();
-      setIsLoading(false);
-      setPokemons(data.results);
-    } catch {
-      setPokemons([]);
-      setIsLoading(false);
-      setError('Pokemon not found. Try another name.');
-    }
-  }, []); */
 
   const nextPageHandler = useCallback(() => {
     const newOffset = currentOffset + 20;
