@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for skeleton/skeleton.tsx</title>
+    <title>Code coverage report for About/about.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">skeleton</a> skeleton.tsx</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">About</a> about.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -82,38 +82,38 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import './skeleton.css';
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Link } from 'react-router';
+import './about.css';
 &nbsp;
-interface SkeletonLoaderProps {
-  count?: number;
-}
-&nbsp;
-export default function SkeletonLoader({ count = 5 }: SkeletonLoaderProps) {
+export default function About() {
   return (
-    &lt;div className="skeleton-container" data-testid="skeleton-container"&gt;
-      {[...Array(count)].map((_, i) =&gt; (
-        &lt;div key={i} className="skeleton-item" data-testid="skeleton-item"&gt;
-          &lt;div className="skeleton-line name"&gt;&lt;/div&gt;
-          &lt;div className="skeleton-line url"&gt;&lt;/div&gt;
-        &lt;/div&gt;
-      ))}
+    &lt;div className="about__wrapper"&gt;
+      &lt;h1&gt;Welcome to About Page!&lt;/h1&gt;
+      &lt;h2&gt;My name is Anatoly! Just made my pokemon search with react app!&lt;/h2&gt;
+      &lt;div className="rss__link-wrapper"&gt;
+        &lt;Link to={'https://rs.school/'}&gt;
+          {' '}
+          &lt;img src="..\src\assets\rslogo.png" alt="Rss scope"&gt;&lt;/img&gt;
+        &lt;/Link&gt;
+        &lt;Link to={'/'}&gt;GO HOME&lt;/Link&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   );
 }

@@ -9,7 +9,7 @@ export default function ErrorPage() {
         <p className="error-page__message">
           The page youre looking for encountered an error.
         </p>
-        <Link to="/" className="error-page__link">
+        <Link to="/" className="error-page__link" data-testid="back-home-link">
           Back to Home
         </Link>
       </div>
