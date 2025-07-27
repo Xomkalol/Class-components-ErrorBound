@@ -4,7 +4,7 @@ import Popout from '../popout/popout';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { apiLink } from '../api/apiHandler';
 
 interface MainProps {
@@ -27,10 +27,21 @@ export default function Main({
   currentOffset,
 }: MainProps) {
   const { pokemonId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const navigate = useNavigate();
+
+  const offset = Number(searchParams.get('offset')) || 0;
+  const limit = Number(searchParams.get('limit')) || 20;
+
+  useEffect(() => {
+    if (offset !== currentOffset) {
+      // Здесь можно вызвать функцию для загрузки данных с новым offset
+      // Например: fetchPokemons(offset, limit);
+    }
+  }, [offset, currentOffset, limit]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -71,6 +82,16 @@ export default function Main({
     return () => window.removeEventListener('popstate', handleBackButton);
   }, [showPopup]);
 
+  const handleNextPaginationButton = () => {
+    const newOffset = currentOffset + 20;
+    nextPageHandler();
+    setSearchParams({ limit: '20', offset: newOffset.toString() });
+  };
+  const handlePrevPaginationButton = () => {
+    const newOffset = Math.max(currentOffset - 20, 0);
+    prevPageHandler();
+    setSearchParams({ limit: '20', offset: newOffset.toString() });
+  };
   return (
     <ErrorBoundary>
       <main className="main__container">
@@ -110,12 +131,15 @@ export default function Main({
           </div>
         </div>
         <button
-          onClick={() => prevPageHandler()}
+          onClick={() => handlePrevPaginationButton()}
           disabled={currentOffset === 0 || isLoading}
         >
           Show prev
         </button>
-        <button onClick={() => nextPageHandler()} disabled={isLoading}>
+        <button
+          onClick={() => handleNextPaginationButton()}
+          disabled={isLoading}
+        >
           Show next
         </button>
         {showPopup && (

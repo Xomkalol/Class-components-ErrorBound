@@ -5,32 +5,41 @@ import ErrorBoundary from './components/errorBoundary/errorBoundary';
 import './app.css';
 import searchPokemon from './components/header/headerHandler';
 import getFirstLoad, { apiLink } from './components/api/apiHandler';
+import { useSearchParams } from 'react-router';
 
 export default function App() {
   const [pokemons, setPokemons] = useState<{ name: string; url: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
-  // const [searchMode, setSearchMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [currentOffset, setCurrentOffset] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialOffset = parseInt(searchParams.get('offset') || '0', 10);
+  const [currentOffset, setCurrentOffset] = useState(initialOffset);
+  const [currentPage, setCurrentPage] = useState(
+    Math.floor(initialOffset / 20)
+  );
 
-  const fetchInitialPokemons = useCallback(async () => {
+  const fetchInitialPokemons = useCallback(async (offset: number) => {
     try {
       setIsLoading(true);
-      const initialPokemons = await getFirstLoad();
-      setPokemons(initialPokemons);
+      const response = await fetch(
+        `${apiLink}/pokemon/?limit=20&offset=${offset}`
+      );
+      const data = await response.json();
+      setPokemons(data.results);
       setIsLoading(false);
       setError(undefined);
+
+      setSearchParams({ limit: '20', offset: offset.toString() });
     } catch (err) {
       console.error('Error loading initial pokemons:', err);
       setIsLoading(false);
-      setError('Failed to load pokemons. Please try again later.');
+      setError('Failed to load pokemons');
     }
   }, []);
 
   useEffect(() => {
-    fetchInitialPokemons();
-  }, [fetchInitialPokemons]);
+    fetchInitialPokemons(initialOffset);
+  }, [fetchInitialPokemons, initialOffset]);
 
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -82,7 +91,7 @@ export default function App() {
     handleSearch('');
   }, [handleSearch]);
 
-  const fetchPaginationPokemons = useCallback(async (offset: number) => {
+  /* const fetchPaginationPokemons = useCallback(async (offset: number) => {
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -96,26 +105,19 @@ export default function App() {
       setIsLoading(false);
       setError('Pokemon not found. Try another name.');
     }
-  }, []);
+  }, []); */
 
   const nextPageHandler = useCallback(() => {
-    const showOffset = currentOffset + 20;
-    setCurrentPage(currentPage + 1);
-    fetchPaginationPokemons(showOffset);
-    setCurrentOffset(currentOffset + 20);
-    console.log(currentOffset);
-  }, [currentOffset, currentPage, fetchPaginationPokemons]);
+    const newOffset = currentOffset + 20;
+    setCurrentOffset(newOffset);
+    fetchInitialPokemons(newOffset);
+  }, [currentOffset, fetchInitialPokemons]);
 
   const prevPageHandler = useCallback(() => {
-    const showOffset = currentOffset - 20;
-    if (currentOffset >= 0) {
-      setCurrentPage(currentPage - 1);
-      console.log(currentPage);
-      fetchPaginationPokemons(showOffset);
-      setCurrentOffset(currentOffset - 20);
-      console.log(currentOffset);
-    }
-  }, [currentOffset, currentPage, fetchPaginationPokemons]);
+    const newOffset = Math.max(currentOffset - 20, 0);
+    setCurrentOffset(newOffset);
+    fetchInitialPokemons(newOffset);
+  }, [currentOffset, fetchInitialPokemons]);
 
   return (
     <div className="app">
