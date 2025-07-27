@@ -4,10 +4,8 @@ import './index.css';
 import './colors.css';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import ErrorPage from './components/errorPage/errorPage';
-// import type Popout from './components/popout/popout';
-// import PokemonDetails from './components/PokemonDetails/pokemonDetails';
 import Popout from './components/popout/popout';
-// import Layout from './components/layout/layout';
+import About from './components/About/about';
 
 const router = createBrowserRouter([
   {
@@ -21,13 +19,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  /* {
-    path: '/pokemon/:pokemonId',
-    element: <App />,
-    loader: async ({ params }) => {
-      return { pokemonId: params.pokemonId };
-    },
-  }, */
+  {
+    path: '/about',
+    element: <About></About>,
+  },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

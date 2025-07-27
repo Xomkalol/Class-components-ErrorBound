@@ -1,5 +1,6 @@
 import './header.css';
 import { useLocalStorage } from '../localStorageHook/useLocalStorage';
+import { Link } from 'react-router';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -14,6 +15,9 @@ export default function Header({ onSearch }: HeaderProps) {
 
   return (
     <div className="upper__container" data-testid="upper-container">
+      <Link to={'/about'} className="about-link">
+        About
+      </Link>
       <div className="upper__controls-wrapper">
         <div className="controls__input-wrapper">
           <input

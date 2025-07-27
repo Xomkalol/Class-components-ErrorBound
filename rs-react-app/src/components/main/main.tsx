@@ -28,21 +28,10 @@ export default function Main({
 }: MainProps) {
   const { pokemonId } = useParams();
   const [searchParams] = useSearchParams();
-  // const [showPopup, setShowPopup] = useState(false);
+
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const navigate = useNavigate();
-
-  const offset = Number(searchParams.get('offset')) || 0;
-  const limit = Number(searchParams.get('limit')) || 20;
-
-  useEffect(() => {
-    if (offset !== currentOffset) {
-      // Здесь можно вызвать функцию для загрузки данных с новым offset
-      // Например: fetchPokemons(offset, limit);
-    }
-  }, [offset, currentOffset, limit]);
-
   useEffect(() => {
     setTimeout(() => {
       setshowSkeleton(false);
@@ -53,7 +42,6 @@ export default function Main({
     if (pokemonId) {
       const url = `${apiLink}/pokemon/${pokemonId}`;
       setselectedPokemonUrl(url);
-      // setShowPopup(true);
     }
   }, [pokemonId]);
 
@@ -63,24 +51,7 @@ export default function Main({
     console.log(pokemonId);
     navigate(`/pokemon/${pokemonId}?${searchParams.toString()}`);
     setselectedPokemonUrl(url);
-    // setShowPopup(true);
   };
-
-  /* const handleClosePopup = () => {
-    setShowPopup(false);
-    navigate(`/?${searchParams.toString()}`);
-  }; */
-
-  /* useEffect(() => {
-    const handleBackButton = () => {
-      if (showPopup) {
-        setShowPopup(false);
-      }
-    }; 
-
-    window.addEventListener('popstate', handleBackButton);
-    return () => window.removeEventListener('popstate', handleBackButton);
-  }, [showPopup]); */
 
   const handleNextPaginationButton = () => {
     const newOffset = currentOffset + 20;

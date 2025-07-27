@@ -12,11 +12,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
-  // const initialOffset = parseInt(searchParams.get('offset') || '0', 10);
-  //const [currentOffset, setCurrentOffset] = useState(initialOffset);
 
   const offset = parseInt(searchParams.get('offset') || '0', 10);
-  // const limit = parseInt(searchParams.get('limit') || '20', 10);
 
   const fetchInitialPokemons = useCallback(
     async (offset: number) => {
