@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import './main.css';
-import Popout from '../popout/popout';
+// import Popout from '../popout/popout';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
-import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import { apiLink } from '../api/apiHandler';
 
 interface MainProps {
@@ -27,8 +27,8 @@ export default function Main({
   currentOffset,
 }: MainProps) {
   const { pokemonId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [showPopup, setShowPopup] = useState(false);
+  const [searchParams] = useSearchParams();
+  // const [showPopup, setShowPopup] = useState(false);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export default function Main({
     if (pokemonId) {
       const url = `${apiLink}/pokemon/${pokemonId}`;
       setselectedPokemonUrl(url);
-      setShowPopup(true);
+      // setShowPopup(true);
     }
   }, [pokemonId]);
 
@@ -61,36 +61,38 @@ export default function Main({
     const match = url.match(/\/(\d+)\/?$/);
     const pokemonId = match ? match[1] : null;
     console.log(pokemonId);
-    navigate(`/pokemon/${pokemonId}`);
+    navigate(`/pokemon/${pokemonId}?${searchParams.toString()}`);
     setselectedPokemonUrl(url);
-    setShowPopup(true);
+    // setShowPopup(true);
   };
 
-  const handleClosePopup = () => {
+  /* const handleClosePopup = () => {
     setShowPopup(false);
-    navigate(`/`);
-  };
+    navigate(`/?${searchParams.toString()}`);
+  }; */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const handleBackButton = () => {
       if (showPopup) {
         setShowPopup(false);
       }
-    };
+    }; 
 
     window.addEventListener('popstate', handleBackButton);
     return () => window.removeEventListener('popstate', handleBackButton);
-  }, [showPopup]);
+  }, [showPopup]); */
 
   const handleNextPaginationButton = () => {
     const newOffset = currentOffset + 20;
     nextPageHandler();
-    setSearchParams({ limit: '20', offset: newOffset.toString() });
+    searchParams.set('offset', newOffset.toString());
+    navigate(`/?${searchParams.toString()}`);
   };
   const handlePrevPaginationButton = () => {
     const newOffset = Math.max(currentOffset - 20, 0);
     prevPageHandler();
-    setSearchParams({ limit: '20', offset: newOffset.toString() });
+    searchParams.set('offset', newOffset.toString());
+    navigate(`/?${searchParams.toString()}`);
   };
   return (
     <ErrorBoundary>
@@ -130,21 +132,29 @@ export default function Main({
             )}
           </div>
         </div>
-        <button
-          onClick={() => handlePrevPaginationButton()}
-          disabled={currentOffset === 0 || isLoading}
-        >
-          Show prev
-        </button>
-        <button
-          onClick={() => handleNextPaginationButton()}
-          disabled={isLoading}
-        >
-          Show next
-        </button>
-        {showPopup && (
-          <Popout pokemon={selectedPokemonUrl} onClose={handleClosePopup} />
-        )}
+        <div className="button-wrapper">
+          <button
+            onClick={() => handlePrevPaginationButton()}
+            disabled={currentOffset === 0 || isLoading}
+          >
+            Show prev
+          </button>
+          <button
+            onClick={() => handleNextPaginationButton()}
+            disabled={isLoading}
+          >
+            Show next
+          </button>
+        </div>
+
+        <Outlet
+          context={{
+            pokemonUrl: selectedPokemonUrl,
+            onClose: () => {
+              navigate(`/?${searchParams.toString()}`);
+            },
+          }}
+        />
       </main>
     </ErrorBoundary>
   );

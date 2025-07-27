@@ -1,17 +1,6 @@
 import { useEffect, useState } from 'react';
 import './popout.css';
-
-interface PopoutProps {
-  pokemon: string;
-  onClose: () => void;
-}
-interface PokemonSelectedData {
-  name: string;
-  abilities: string[];
-  forms: string[];
-  species: string;
-  imageUrl: string;
-}
+import { useOutletContext } from 'react-router';
 
 interface PokemonAbility {
   ability: {
@@ -21,79 +10,120 @@ interface PokemonAbility {
   is_hidden: boolean;
   slot: number;
 }
+
 interface PokemonForm {
   name: string;
   url: string;
 }
 
-export default function Popout({ pokemon, onClose }: PopoutProps) {
-  const [pokemonInfo, setPokemonInfo] = useState<PokemonSelectedData>({
-    name: '',
-    abilities: [],
-    forms: [],
-    species: '',
-    imageUrl: '',
-  });
+interface PokemonData {
+  name: string;
+  abilities: PokemonAbility[];
+  forms: PokemonForm[];
+  species: {
+    name: string;
+    url: string;
+  };
+  sprites: {
+    front_default: string;
+  };
+}
+
+interface PopoutContext {
+  pokemonUrl: string;
+  onClose: () => void;
+}
+
+export default function Popout() {
+  const { pokemonUrl, onClose } = useOutletContext<PopoutContext>();
+  const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPokemonData = async () => {
+    const fetchPokemonDetails = async () => {
       try {
-        const response = await fetch(pokemon);
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(pokemonUrl);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`Failed to fetch: ${response.status}`);
         }
-        const data = await response.json();
-        console.log('Данные покемона:', data);
-        const selectedData: PokemonSelectedData = {
-          name: data.name,
-          abilities: data.abilities.map(
-            (ability: PokemonAbility) => ability.ability.name
-          ),
-          forms: data.forms.map((form: PokemonForm) => form.name),
-          species: data.species.name,
-          imageUrl: data.sprites.front_default,
-        };
-        setPokemonInfo(selectedData);
+
+        const data: PokemonData = await response.json();
+        setPokemonData(data);
       } catch (err) {
-        console.error('Ошибка при загрузке:', err);
+        console.error('Pokemon fetch error:', err);
+        setError('Failed to load Pokemon details');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchPokemonData();
-  }, [pokemon]);
+    if (pokemonUrl) {
+      fetchPokemonDetails();
+    }
+  }, [pokemonUrl]);
+
+  if (!pokemonUrl) return null;
 
   return (
-    <div className="layout" onClick={onClose} data-testid="popout-overlay">
+    <div
+      className="popout-overlay"
+      onClick={onClose}
+      data-testid="popout-overlay"
+    >
       <div
-        className="pop__container"
+        className="popout-content"
         onClick={(e) => e.stopPropagation()}
         data-testid="popout-content"
       >
-        <div className="pop__main">
-          <h2 className="pop__header" data-testid="pokemon-name">
-            {pokemonInfo.name}
-          </h2>
-          {pokemonInfo.imageUrl && (
-            <img
-              src={pokemonInfo.imageUrl}
-              alt={pokemonInfo.name}
-              data-testid="pokemon-image"
-            />
-          )}
-          <ul className="pop__ul">
-            <li className="pop__li" data-testid="pokemon-abilities">
-              Abilities: {pokemonInfo.abilities}
-            </li>
-            <li className="pop__li" data-testid="pokemon-forms">
-              Forms: {pokemonInfo.forms.join()}
-            </li>
-            <li className="pop__li" data-testid="pokemon-species">
-              Species: {pokemonInfo.species}
-            </li>
-          </ul>
-        </div>
-        <button onClick={onClose} data-testid="close-button">
-          Закрыть
+        {loading ? (
+          <div className="popout-loading">Loading...</div>
+        ) : error ? (
+          <div className="popout-error">{error}</div>
+        ) : pokemonData ? (
+          <>
+            <div className="popout-header">
+              <h2 className="pokemon-name" data-testid="pokemon-name">
+                {pokemonData.name}
+              </h2>
+              {pokemonData.sprites.front_default && (
+                <img
+                  src={pokemonData.sprites.front_default}
+                  alt={pokemonData.name}
+                  className="pokemon-image"
+                  data-testid="pokemon-image"
+                />
+              )}
+            </div>
+
+            <div className="pokemon-details">
+              <h3>Details</h3>
+              <ul className="details-list">
+                <li data-testid="pokemon-abilities">
+                  <strong>Abilities:</strong>{' '}
+                  {pokemonData.abilities.map((a) => a.ability.name).join(', ')}
+                </li>
+                <li data-testid="pokemon-forms">
+                  <strong>Forms:</strong>{' '}
+                  {pokemonData.forms.map((f) => f.name).join(', ')}
+                </li>
+                <li data-testid="pokemon-species">
+                  <strong>Species:</strong> {pokemonData.species.name}
+                </li>
+              </ul>
+            </div>
+          </>
+        ) : null}
+
+        <button
+          onClick={onClose}
+          className="close-button"
+          data-testid="close-button"
+        >
+          Close
         </button>
       </div>
     </div>

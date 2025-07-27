@@ -12,31 +12,37 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialOffset = parseInt(searchParams.get('offset') || '0', 10);
-  const [currentOffset, setCurrentOffset] = useState(initialOffset);
+  // const initialOffset = parseInt(searchParams.get('offset') || '0', 10);
+  //const [currentOffset, setCurrentOffset] = useState(initialOffset);
 
-  const fetchInitialPokemons = useCallback(async (offset: number) => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `${apiLink}/pokemon/?limit=20&offset=${offset}`
-      );
-      const data = await response.json();
-      setPokemons(data.results);
-      setIsLoading(false);
-      setError(undefined);
+  const offset = parseInt(searchParams.get('offset') || '0', 10);
+  // const limit = parseInt(searchParams.get('limit') || '20', 10);
 
-      setSearchParams({ limit: '20', offset: offset.toString() });
-    } catch (err) {
-      console.error('Error loading initial pokemons:', err);
-      setIsLoading(false);
-      setError('Failed to load pokemons');
-    }
-  }, []);
+  const fetchInitialPokemons = useCallback(
+    async (offset: number) => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          `${apiLink}/pokemon/?limit=20&offset=${offset}`
+        );
+        const data = await response.json();
+        setPokemons(data.results);
+        setIsLoading(false);
+        setError(undefined);
+
+        setSearchParams({ limit: '20', offset: offset.toString() });
+      } catch (err) {
+        console.error('Error loading initial pokemons:', err);
+        setIsLoading(false);
+        setError('Failed to load pokemons');
+      }
+    },
+    [setSearchParams]
+  );
 
   useEffect(() => {
-    fetchInitialPokemons(initialOffset);
-  }, [fetchInitialPokemons, initialOffset]);
+    fetchInitialPokemons(offset);
+  }, [offset, fetchInitialPokemons]);
 
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -88,17 +94,20 @@ export default function App() {
     handleSearch('');
   }, [handleSearch]);
 
+  const handlePagination = useCallback(
+    (newOffset: number) => {
+      setSearchParams({ limit: '20', offset: newOffset.toString() });
+    },
+    [setSearchParams]
+  );
+
   const nextPageHandler = useCallback(() => {
-    const newOffset = currentOffset + 20;
-    setCurrentOffset(newOffset);
-    fetchInitialPokemons(newOffset);
-  }, [currentOffset, fetchInitialPokemons]);
+    handlePagination(offset + 20);
+  }, [offset, handlePagination]);
 
   const prevPageHandler = useCallback(() => {
-    const newOffset = Math.max(currentOffset - 20, 0);
-    setCurrentOffset(newOffset);
-    fetchInitialPokemons(newOffset);
-  }, [currentOffset, fetchInitialPokemons]);
+    handlePagination(Math.max(offset - 20, 0));
+  }, [offset, handlePagination]);
 
   return (
     <div className="app">
@@ -111,7 +120,7 @@ export default function App() {
           onRetry={handleRetry}
           nextPageHandler={nextPageHandler}
           prevPageHandler={prevPageHandler}
-          currentOffset={currentOffset}
+          currentOffset={offset}
         />
       </ErrorBoundary>
     </div>
