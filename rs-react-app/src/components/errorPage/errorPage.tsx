@@ -1,10 +1,18 @@
 import { Link } from 'react-router';
+import './errorPage.css'; // Создайте этот файл для стилей
 
-export default function errorPage() {
+export default function ErrorPage() {
   return (
-    <>
-      <h1>Error Page!!</h1>
-      <Link to="/">Back to home</Link>
-    </>
+    <div className="error-page__container">
+      <div className="error-page__content">
+        <h1 className="error-page__title">Oops! Something went wrong</h1>
+        <p className="error-page__message">
+          The page youre looking for encountered an error.
+        </p>
+        <Link to="/" className="error-page__link">
+          Back to Home
+        </Link>
+      </div>
+    </div>
   );
 }
