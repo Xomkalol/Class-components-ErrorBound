@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import './main.css';
-// import Popout from '../popout/popout';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';

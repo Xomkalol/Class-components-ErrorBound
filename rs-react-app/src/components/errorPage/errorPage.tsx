@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import './errorPage.css'; // Создайте этот файл для стилей
+import './errorPage.css';
 
 export default function ErrorPage() {
   return (

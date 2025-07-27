@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import Popout from '../src/components/popout/Popout';
-import { MemoryRouter, Outlet, Route, Routes } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
 
 const mockPokemonData = {
   name: 'pikachu',
