@@ -15,7 +15,7 @@ export default function Header({ onSearch }: HeaderProps) {
 
   return (
     <div className="upper__container" data-testid="upper-container">
-      <Link to={'/about'} className="about-link">
+      <Link to={'/about'} className="about-link" data-testid="about-link">
         About
       </Link>
       <div className="upper__controls-wrapper">

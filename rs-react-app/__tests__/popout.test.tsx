@@ -1,10 +1,9 @@
-// Popout.test.tsx
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import Popout from '../src/components/popout/Popout';
+import { MemoryRouter, Outlet, Route, Routes } from 'react-router';
 
-// Моковые данные
 const mockPokemonData = {
   name: 'pikachu',
   abilities: [
@@ -16,12 +15,27 @@ const mockPokemonData = {
   sprites: { front_default: 'pikachu-image.png' },
 };
 
+function TestWrapper({
+  pokemonUrl,
+  onClose,
+}: {
+  pokemonUrl: string;
+  onClose: () => void;
+}) {
+  return (
+    <MemoryRouter>
+      <Routes>
+        <Route path="/" element={<Popout />} handle={{ pokemonUrl, onClose }} />
+      </Routes>
+    </MemoryRouter>
+  );
+}
+
 describe('Popout Component', () => {
   const mockOnClose = vi.fn();
   const mockPokemonUrl = 'https://pokeapi.co/api/v2/pokemon/25/';
 
   beforeEach(() => {
-    render(<Popout pokemon={mockPokemonUrl} onClose={mockOnClose} />);
     vi.stubGlobal(
       'fetch',
       vi.fn(() =>
@@ -31,6 +45,8 @@ describe('Popout Component', () => {
         })
       )
     );
+
+    render(<TestWrapper pokemonUrl={mockPokemonUrl} onClose={mockOnClose} />);
   });
 
   afterEach(() => {
