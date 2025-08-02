@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { addPokemon } from '../../store/counter';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';

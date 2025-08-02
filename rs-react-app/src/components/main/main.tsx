@@ -6,8 +6,7 @@ import ApiErrorBanner from '../api/apiErrorBanner';
 import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import { apiLink } from '../api/apiHandler';
 import Checkbox from './checkbox';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../../store/store';
+import FlyOut from '../flyout/flyout';
 
 interface MainProps {
   pokemons: { name: string; url: string }[];
@@ -30,7 +29,6 @@ export default function Main({
 }: MainProps) {
   const { pokemonId } = useParams();
   const [searchParams] = useSearchParams();
-  const pokeMonState = useSelector((state: RootState) => state.counter);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const navigate = useNavigate();
@@ -72,15 +70,7 @@ export default function Main({
         <h2 className="main__header">Pokemons</h2>
 
         {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
-        <div className="main-selected">
-          {pokeMonState.urls.map((item) =>
-            pokeMonState.urls.length > 0 ? (
-              <div key="item">{item}</div>
-            ) : (
-              <div key="nothing"></div>
-            )
-          )}
-        </div>
+        <FlyOut></FlyOut>
         <div className="result__wrapper">
           <div className="result__header">
             <span className="header__text">Pokemon Name</span>
