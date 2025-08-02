@@ -1,6 +1,7 @@
 .main__container {
   width: 100%;
   height: 88%;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -267,4 +268,11 @@
 
 .button-wrapper {
   display: flex;
+}
+
+.main-selected {
+  position: absolute;
+  top: 100px;
+  left: 10px;
+  border: solid 1px black;
 }

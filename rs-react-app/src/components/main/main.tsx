@@ -72,7 +72,15 @@ export default function Main({
         <h2 className="main__header">Pokemons</h2>
 
         {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
-
+        <div className="main-selected">
+          {pokeMonState.urls.map((item) =>
+            pokeMonState.urls.length > 0 ? (
+              <div key="item">{item}</div>
+            ) : (
+              <div key="nothing"></div>
+            )
+          )}
+        </div>
         <div className="result__wrapper">
           <div className="result__header">
             <span className="header__text">Pokemon Name</span>
@@ -128,7 +136,6 @@ export default function Main({
             },
           }}
         />
-        <div>`{pokeMonState.urls.join()}`</div>
       </main>
     </ErrorBoundary>
   );
