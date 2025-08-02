@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import { clearState } from '../../store/counter';
+import CreateCSVFile from '../../util/createCSV';
 
 export default function FlyOut() {
   const pokeMonState = useSelector((state: RootState) => state.counter);
@@ -9,6 +10,7 @@ export default function FlyOut() {
   if (pokeMonState.urls.length == 0) {
     return null;
   }
+
   return (
     <div className="main-selected">
       {pokeMonState.urls.map((item) =>
@@ -19,7 +21,7 @@ export default function FlyOut() {
         )
       )}
       <button onClick={() => dispatch(clearState())}>Unselect</button>
-      <button>Download</button>
+      <button onClick={() => CreateCSVFile(pokeMonState)}>Download</button>
     </div>
   );
 }
