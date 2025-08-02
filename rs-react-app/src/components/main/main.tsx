@@ -5,8 +5,8 @@ import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
 import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import { apiLink } from '../api/apiHandler';
-import { decrement, increment } from '../../store/counter';
-import { useDispatch, useSelector } from 'react-redux';
+import Checkbox from './checkbox';
+import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 
 interface MainProps {
@@ -30,9 +30,7 @@ export default function Main({
 }: MainProps) {
   const { pokemonId } = useParams();
   const [searchParams] = useSearchParams();
-  const count = useSelector((state: RootState) => state.counter.value);
-  const dispatch = useDispatch();
-
+  const pokeMonState = useSelector((state: RootState) => state.counter);
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const navigate = useNavigate();
@@ -96,6 +94,7 @@ export default function Main({
                     >
                       View details
                     </span>
+                    <Checkbox pokemonUrl={pokemon.url}></Checkbox>
                   </div>
                 </div>
               ))
@@ -119,23 +118,6 @@ export default function Main({
           >
             Show next
           </button>
-          <div>
-            <div>
-              <button
-                aria-label="Increment value"
-                onClick={() => dispatch(increment())}
-              >
-                Increment
-              </button>
-              <span>{count}</span>
-              <button
-                aria-label="Decrement value"
-                onClick={() => dispatch(decrement())}
-              >
-                Decrement
-              </button>
-            </div>
-          </div>
         </div>
 
         <Outlet
@@ -146,6 +128,7 @@ export default function Main({
             },
           }}
         />
+        <div>`{pokeMonState.urls.join()}`</div>
       </main>
     </ErrorBoundary>
   );
