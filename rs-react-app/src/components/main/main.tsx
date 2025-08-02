@@ -5,6 +5,9 @@ import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
 import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
 import { apiLink } from '../api/apiHandler';
+import { decrement, increment } from '../../store/counter';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from '../../store/store';
 
 interface MainProps {
   pokemons: { name: string; url: string }[];
@@ -27,6 +30,8 @@ export default function Main({
 }: MainProps) {
   const { pokemonId } = useParams();
   const [searchParams] = useSearchParams();
+  const count = useSelector((state: RootState) => state.counter.value);
+  const dispatch = useDispatch();
 
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
@@ -114,6 +119,23 @@ export default function Main({
           >
             Show next
           </button>
+          <div>
+            <div>
+              <button
+                aria-label="Increment value"
+                onClick={() => dispatch(increment())}
+              >
+                Increment
+              </button>
+              <span>{count}</span>
+              <button
+                aria-label="Decrement value"
+                onClick={() => dispatch(decrement())}
+              >
+                Decrement
+              </button>
+            </div>
+          </div>
         </div>
 
         <Outlet
