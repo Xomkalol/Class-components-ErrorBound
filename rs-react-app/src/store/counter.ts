@@ -21,9 +21,12 @@ export const counterSlice = createSlice({
         state.urls.push(action.payload);
       }
     },
+    clearState: (state) => {
+      state.urls = [];
+    },
   },
 });
 
-export const { addPokemon } = counterSlice.actions;
+export const { addPokemon, clearState } = counterSlice.actions;
 
 export default counterSlice.reducer;

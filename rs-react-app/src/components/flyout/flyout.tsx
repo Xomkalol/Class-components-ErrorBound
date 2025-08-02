@@ -1,8 +1,10 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
+import { clearState } from '../../store/counter';
 
 export default function FlyOut() {
   const pokeMonState = useSelector((state: RootState) => state.counter);
+  const dispatch = useDispatch();
 
   if (pokeMonState.urls.length == 0) {
     return null;
@@ -16,7 +18,7 @@ export default function FlyOut() {
           <div key="nothing"></div>
         )
       )}
-      <button>Unselect</button>
+      <button onClick={() => dispatch(clearState())}>Unselect</button>
       <button>Download</button>
     </div>
   );
