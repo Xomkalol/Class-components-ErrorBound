@@ -57,7 +57,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 200px;
 }
-.rss__link-wrapper a.dark {
+.rss__link-wrapper.dark a {
   background-color: var(--cta-button-dark);
   color: var(--text-dark-primary);
 }
@@ -67,7 +67,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   background-color: var(--error);
 }
-.rss__link-wrapper a.dark:hover {
+.rss__link-wrapper.dark a:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   background-color: var(--error-dark);

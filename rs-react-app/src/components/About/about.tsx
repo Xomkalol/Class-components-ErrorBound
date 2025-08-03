@@ -9,7 +9,7 @@ export default function About() {
     <div className={`about__wrapper ${theme}`}>
       <h1>Welcome to About Page!</h1>
       <h2>My name is Anatoly! Just made my pokemon search with react app!</h2>
-      <div className={`rss__link-wrappe ${theme}`}>
+      <div className={`rss__link-wrapper ${theme}`}>
         <Link to={'https://rs.school/'}>
           {' '}
           <img src="..\src\assets\rslogo.png" alt="Rss scope"></img>
