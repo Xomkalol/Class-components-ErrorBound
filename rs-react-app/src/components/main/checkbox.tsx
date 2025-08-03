@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
-import { addPokemon } from '../../store/counter';
+import { addPokemon, type pokemonState } from '../../store/counter';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 
-export default function CheckBox(checkBoxProps: { pokemonUrl: string }) {
+export default function CheckBox(checkBoxProps: { pokemon: pokemonState }) {
   const dispatch = useDispatch();
-  const pokeMonState = useSelector((state: RootState) => state.counter);
+  const pokeMonState = useSelector(
+    (state: RootState) => state.counter.pokemons
+  );
   const [isChecked, setIsChecked] = useState(
-    pokeMonState.urls.includes(checkBoxProps.pokemonUrl)
+    pokeMonState.some((p) => p.url === checkBoxProps.pokemon.url)
   );
 
   useEffect(() => {
-    if (pokeMonState.urls.indexOf(checkBoxProps.pokemonUrl) == -1) {
-      setIsChecked(false);
-    } else {
-      setIsChecked(true);
-    }
-  }, [checkBoxProps.pokemonUrl, pokeMonState.urls]);
+    setIsChecked(pokeMonState.some((p) => p.url === checkBoxProps.pokemon.url));
+  }, [checkBoxProps.pokemon.url, pokeMonState]);
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
-    dispatch(addPokemon(checkBoxProps.pokemonUrl));
+    dispatch(addPokemon(checkBoxProps.pokemon));
     console.log('Current pokemons:', pokeMonState);
   };
 

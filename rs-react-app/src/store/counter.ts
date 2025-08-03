@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+export interface pokemonState {
+  name: string;
+  url: string;
+}
 export interface savedPokemonState {
-  urls: string[];
+  pokemons: pokemonState[];
 }
 
 const initialState: savedPokemonState = {
-  urls: [],
+  pokemons: [],
 };
 
 export const counterSlice = createSlice({
@@ -13,16 +16,17 @@ export const counterSlice = createSlice({
   initialState,
   reducers: {
     addPokemon: (state, action) => {
-      const pokemonUrl = action.payload;
-      const index = state.urls.indexOf(pokemonUrl);
+      const index = state.pokemons.findIndex(
+        (p) => p.url === action.payload.url
+      );
       if (index !== -1) {
-        state.urls.splice(index, 1);
+        state.pokemons.splice(index, 1);
       } else {
-        state.urls.push(action.payload);
+        state.pokemons.push(action.payload);
       }
     },
     clearState: (state) => {
-      state.urls = [];
+      state.pokemons = [];
     },
   },
 });

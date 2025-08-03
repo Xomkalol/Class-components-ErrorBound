@@ -99,7 +99,7 @@ export default function Main({
                     >
                       View details
                     </span>
-                    <Checkbox pokemonUrl={pokemon.url} />
+                    <Checkbox pokemon={pokemon} />
                   </div>
                 </div>
               ))

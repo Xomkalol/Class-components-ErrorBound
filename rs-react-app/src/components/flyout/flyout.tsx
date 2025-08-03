@@ -11,14 +11,14 @@ export default function FlyOut() {
   const dispatch = useDispatch();
   const { theme } = useContext(themeContext);
 
-  if (pokeMonState.urls.length == 0) {
+  if (pokeMonState.pokemons.length == 0) {
     return null;
   }
 
   return (
     <div className={`main-selected ${theme}`}>
-      {pokeMonState.urls.map((item) => (
-        <div key={item}>{item}</div>
+      {pokeMonState.pokemons.map((item) => (
+        <div key={item.name}>{item.name}</div>
       ))}
       <button
         className={`selected__unselect-button ${theme}`}
