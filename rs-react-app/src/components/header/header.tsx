@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export default function Header({ onSearch }: HeaderProps) {
   const [searchValue, setSearchValue] = useLocalStorage('searchValue', '');
-  const theme = useContext(themeContext);
+  const { theme, toggleTheme } = useContext(themeContext);
 
   const handleSearch = () => {
     onSearch(searchValue);
@@ -43,6 +43,7 @@ export default function Header({ onSearch }: HeaderProps) {
           >
             Search
           </button>
+          <button onClick={toggleTheme}>THEME</button>
         </div>
       </div>
     </div>
