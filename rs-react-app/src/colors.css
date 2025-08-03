@@ -7,4 +7,14 @@
   --cta-button: #ffaaa7;
   --success: #a8e6cf;
   --error: #ff8b94;
+
+  --bg-dark-primary: #1a1a2e;
+  --bg-dark-secondary: #16213e;
+  --text-dark-primary: #e6e6e6;
+  --text-dark-secondary: #b8b8b8;
+  --accent-blue-dark: #7cc0f0;
+  --accent-pink-dark: #f0a8b8;
+  --cta-button-dark: #ff7a76;
+  --success-dark: #6dd6b6;
+  --error-dark: #ff5c6c;
 }
