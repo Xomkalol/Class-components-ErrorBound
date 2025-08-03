@@ -44,6 +44,8 @@
 
 .controls__button-wrapper {
   flex-shrink: 0;
+  display: flex;
+  gap: 25px;
 }
 
 .controls__button {

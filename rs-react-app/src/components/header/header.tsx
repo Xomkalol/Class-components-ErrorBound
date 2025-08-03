@@ -43,7 +43,9 @@ export default function Header({ onSearch }: HeaderProps) {
           >
             Search
           </button>
-          <button onClick={toggleTheme}>THEME</button>
+          <button className={`controls__button ${theme}`} onClick={toggleTheme}>
+            switch theme
+          </button>
         </div>
       </div>
     </div>
