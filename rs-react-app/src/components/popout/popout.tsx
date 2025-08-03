@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './popout.css';
 import { useOutletContext } from 'react-router';
+import { themeContext } from '../../util/context';
 
 interface PokemonAbility {
   ability: {
@@ -39,6 +40,7 @@ export default function Popout() {
   const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { theme } = useContext(themeContext);
 
   useEffect(() => {
     const fetchPokemonDetails = async () => {
@@ -70,38 +72,41 @@ export default function Popout() {
 
   return (
     <div
-      className="popout-overlay"
+      className={`popout-overlay ${theme}`}
       onClick={onClose}
       data-testid="popout-overlay"
     >
       <div
-        className="popout-content"
+        className={`popout-content ${theme}`}
         onClick={(e) => e.stopPropagation()}
         data-testid="popout-content"
       >
         {loading ? (
-          <div className="popout-loading">Loading...</div>
+          <div className={`popout-loading ${theme}`}>Loading...</div>
         ) : error ? (
-          <div className="popout-error">{error}</div>
+          <div className={`popout-error ${theme}`}>{error}</div>
         ) : pokemonData ? (
           <>
-            <div className="popout-header">
-              <h2 className="pokemon-name" data-testid="pokemon-name">
+            <div className={`popout-header ${theme}`}>
+              <h2
+                className={`pokemon-name ${theme}`}
+                data-testid="pokemon-name"
+              >
                 {pokemonData.name}
               </h2>
               {pokemonData.sprites.front_default && (
                 <img
                   src={pokemonData.sprites.front_default}
                   alt={pokemonData.name}
-                  className="pokemon-image"
+                  className={`pokemon-image ${theme}`}
                   data-testid="pokemon-image"
                 />
               )}
             </div>
 
-            <div className="pokemon-details">
+            <div className={`pokemon-details ${theme}`}>
               <h3>Details</h3>
-              <ul className="details-list">
+              <ul className={`details-list ${theme}`}>
                 <li data-testid="pokemon-abilities">
                   <strong>Abilities:</strong>{' '}
                   {pokemonData.abilities.map((a) => a.ability.name).join(', ')}
@@ -120,7 +125,7 @@ export default function Popout() {
 
         <button
           onClick={onClose}
-          className="close-button"
+          className={`close-button ${theme}`}
           data-testid="close-button"
         >
           Close
