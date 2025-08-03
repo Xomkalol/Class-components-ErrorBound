@@ -16,19 +16,21 @@ export default function FlyOut() {
   }
 
   return (
-    <div className={`main-selected ${theme}`}>
+    <div className={`main-selected ${theme}`} data-testid="flyout">
       {pokeMonState.pokemons.map((item) => (
         <div key={item.name}>{item.name}</div>
       ))}
       <button
         className={`selected__unselect-button ${theme}`}
         onClick={() => dispatch(clearState())}
+        data-testid="unselect"
       >
         Unselect
       </button>
       <button
         className={`selected__download-button ${theme}`}
         onClick={() => CreateCSVFile(pokeMonState)}
+        data-testid="download"
       >
         Download
       </button>
