@@ -6,11 +6,16 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import ErrorPage from './components/errorPage/errorPage';
 import Popout from './components/popout/popout';
 import About from './components/About/about';
+import { ThemeProvider } from './util/contextProvider';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: (
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -21,7 +26,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/about',
-    element: <About></About>,
+    element: (
+      <ThemeProvider>
+        <About></About>
+      </ThemeProvider>
+    ),
   },
 ]);
 const root = ReactDOM.createRoot(
