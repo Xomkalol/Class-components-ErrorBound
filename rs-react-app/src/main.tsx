@@ -11,11 +11,7 @@ import { ThemeProvider } from './util/contextProvider';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
-    ),
+    element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -26,14 +22,14 @@ const router = createBrowserRouter([
   },
   {
     path: '/about',
-    element: (
-      <ThemeProvider>
-        <About></About>
-      </ThemeProvider>
-    ),
+    element: <About></About>,
   },
 ]);
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(<RouterProvider router={router} />);
+root.render(
+  <ThemeProvider>
+    <RouterProvider router={router} />
+  </ThemeProvider>
+);
