@@ -33,6 +33,7 @@ export default function Header({ onSearch }: HeaderProps) {
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyUp={(e) => e.key === 'Enter' && handleSearch()}
             data-testid="search-input"
+            type="search"
           />
         </div>
         <div className="controls__button-wrapper">
