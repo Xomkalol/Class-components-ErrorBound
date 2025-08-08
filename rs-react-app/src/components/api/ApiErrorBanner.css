@@ -6,6 +6,11 @@
   border-radius: 4px;
 }
 
+.error-banner.dark {
+  background-color: var(--bg-dark-primary);
+  border-left: 4px solid var(--error-dark);
+}
+
 .error-content {
   display: flex;
   justify-content: space-between;
@@ -16,6 +21,9 @@
   color: #d32f2f;
   font-weight: 500;
 }
+.error-message.dark {
+  color: var(--error-dark);
+}
 
 .retry-button {
   background-color: #f44336;
@@ -25,6 +33,10 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+.retry-button.dark {
+  background-color: var(--bg-dark-primary);
+  color: var(--text-dark-primary);
 }
 
 .retry-button:hover {

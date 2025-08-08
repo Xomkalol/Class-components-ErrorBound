@@ -25,10 +25,10 @@ describe('Header component', () => {
   });
 
   it('should render search container', () => {
+    expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'About' })).toBeInTheDocument();
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByTestId('upper-container')).toBeInTheDocument();
-    expect(screen.getByTestId('search-input')).toBeInTheDocument();
-    expect(screen.getByTestId('search-button')).toBeInTheDocument();
-    expect(screen.getByTestId('about-link')).toBeInTheDocument();
   });
 
   it('should update value when user types', () => {

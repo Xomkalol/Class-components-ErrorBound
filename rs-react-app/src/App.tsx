@@ -6,6 +6,8 @@ import './app.css';
 import searchPokemon from './components/header/headerHandler';
 import getFirstLoad, { apiLink } from './components/api/apiHandler';
 import { useSearchParams } from 'react-router';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 export default function App() {
   const [pokemons, setPokemons] = useState<{ name: string; url: string }[]>([]);
@@ -107,19 +109,21 @@ export default function App() {
   }, [offset, handlePagination]);
 
   return (
-    <div className="app">
-      <ErrorBoundary>
-        <Header onSearch={handleSearch} />
-        <Main
-          pokemons={pokemons}
-          isLoading={isLoading}
-          error={error}
-          onRetry={handleRetry}
-          nextPageHandler={nextPageHandler}
-          prevPageHandler={prevPageHandler}
-          currentOffset={offset}
-        />
-      </ErrorBoundary>
-    </div>
+    <Provider store={store}>
+      <div className="app">
+        <ErrorBoundary>
+          <Header onSearch={handleSearch} />
+          <Main
+            pokemons={pokemons}
+            isLoading={isLoading}
+            error={error}
+            onRetry={handleRetry}
+            nextPageHandler={nextPageHandler}
+            prevPageHandler={prevPageHandler}
+            currentOffset={offset}
+          />
+        </ErrorBoundary>
+      </div>
+    </Provider>
   );
 }

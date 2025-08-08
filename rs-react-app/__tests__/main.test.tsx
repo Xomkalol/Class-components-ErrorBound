@@ -1,48 +1,71 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import Main from '../src/components/main/main';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import Main from '../src/components/main/main';
 
-const navigateMock = vi.fn();
+afterEach(() => {
+  cleanup();
+});
+interface MockRootState {
+  counter: {
+    pokemons: { name: string; url: string }[];
+  };
+}
+vi.mock('react-redux', () => {
+  const mockUseSelector = <T,>(selector: (state: MockRootState) => T): T => {
+    const mockState: MockRootState = { counter: { pokemons: [] } };
+    return selector(mockState);
+  };
 
+  const mockUseDispatch = () => vi.fn();
+
+  return {
+    useSelector: mockUseSelector,
+    useDispatch: mockUseDispatch,
+  };
+});
 vi.mock('react-router', async () => {
   const actual =
     await vi.importActual<typeof import('react-router')>('react-router');
   return {
     ...actual,
-    useNavigate: () => navigateMock,
-    useParams: () => ({ pokemonId: undefined }),
+    useParams: () => ({}),
     useSearchParams: () => [new URLSearchParams('offset=0')],
+    useNavigate: () => vi.fn(),
   };
 });
 
-describe('Main component', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.clearAllMocks();
-  });
+vi.mock('../flyout/flyout', () => ({
+  default: () => <div data-testid="flyout" />,
+}));
+vi.mock('./checkbox', () => ({
+  default: () => <div data-testid="checkbox" />,
+}));
+vi.mock('../skeleton/skeleton', () => ({
+  default: () => <div data-testid="skeleton-item" />,
+}));
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
+const renderWithRouter = (props = {}) => {
   const defaultProps = {
-    pokemons: [
-      { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-    ],
+    pokemons: [] as { name: string; url: string }[],
     isLoading: false,
     currentOffset: 0,
     nextPageHandler: vi.fn(),
     prevPageHandler: vi.fn(),
   };
 
-  it('показывает скелетоны при isLoading === true', () => {
-    render(
-      <MemoryRouter>
-        <Main {...defaultProps} isLoading={true} />
-      </MemoryRouter>
-    );
+  render(
+    <MemoryRouter>
+      <Main {...defaultProps} {...props} />
+    </MemoryRouter>
+  );
+};
 
-    expect(screen.getByText(/pokemons/i)).toBeTruthy();
+describe('Main component', () => {
+  it('отображает заголовок "Pokemons"', () => {
+    renderWithRouter({ isLoading: false });
+
+    const header = screen.getByText(/pokemons/i, { exact: false });
+    expect(header).toBeTruthy();
   });
 });

@@ -44,6 +44,8 @@
 
 .controls__button-wrapper {
   flex-shrink: 0;
+  display: flex;
+  gap: 25px;
 }
 
 .controls__button {
@@ -110,4 +112,29 @@
 .about-link:active {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.upper__container.dark {
+  background-color: var(--bg-dark-secondary);
+}
+
+.controls__input-wrapper input.dark {
+  background-color: var(--bg-dark-primary);
+}
+.controls__button.dark {
+  background-color: var(--cta-button-dark);
+  color: var(--text-dark-primary);
+}
+
+.controls__button.dark :hover {
+  background-color: color-mix(
+    in srgb,
+    var(--cta-button-dark) 90%,
+    var(--error-dark)
+  );
+}
+
+.about-link.dark {
+  background-color: var(--cta-button-dark);
+  color: var(--text-dark-primary);
 }

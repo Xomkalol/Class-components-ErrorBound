@@ -6,6 +6,9 @@
   background-color: var(--bg-primary);
   padding: 2rem;
 }
+.error-page__container.dark {
+  background-color: var(--bg-dark-primary);
+}
 
 .error-page__content {
   text-align: center;
@@ -15,17 +18,26 @@
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+.error-page__content.dark {
+  background-color: var(--bg-dark-secondary);
+}
 
 .error-page__title {
   color: var(--error);
   font-size: 2.5rem;
   margin-bottom: 1rem;
 }
+.error-page__title.dark {
+  color: var(--error-dark);
+}
 
 .error-page__message {
   color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 2rem;
+}
+.error-page__message.dark {
+  color: var(--text-dark-primary);
 }
 
 .error-page__link {
@@ -39,11 +51,18 @@
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.error-page__link.dark {
+  background-color: var(--cta-button-dark);
+  color: var(--text-dark-primary);
+}
 
 .error-page__link:hover {
   background-color: var(--error);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+.error-page__link.dark:hover {
+  background-color: var(--error-dark);
 }
 
 .error-page__link:active {

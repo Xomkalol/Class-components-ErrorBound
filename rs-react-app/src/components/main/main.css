@@ -1,12 +1,17 @@
 .main__container {
   width: 100%;
   height: 88%;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+}
+.main__container.dark {
+  background-color: var(--bg-dark-primary);
+  color: var(--text-dark-primary);
 }
 
 .main__header {
@@ -19,6 +24,10 @@
   padding-bottom: 10px;
   border-bottom: 2px solid var(--accent-pink);
 }
+.main__header.dark {
+  color: var(--text-dark-primary);
+  border-bottom: 2px solid var(--accent-pink-dark);
+}
 .main__header::after {
   content: '';
   position: absolute;
@@ -28,6 +37,13 @@
   width: 100px;
   height: 3px;
   background: linear-gradient(90deg, var(--accent-pink), var(--accent-blue));
+}
+.main__header.dark::after {
+  background: linear-gradient(
+    90deg,
+    var(--accent-pink-dark),
+    var(--accent-blue-dark)
+  );
 }
 .result__wrapper {
   width: 100%;
@@ -40,6 +56,9 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
+.result__wrapper.dark {
+  background-color: var(--bg-dark-secondary);
+}
 
 .result__header {
   display: flex;
@@ -49,12 +68,18 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+.result__header.dark {
+  background-color: var(--accent-pink-dark);
+}
 
 .header__text {
   flex: 1;
   text-align: center;
   font-size: 14px;
   color: var(--text-primary);
+}
+.header__text.dark {
+  color: var(--text-dark-primary);
 }
 
 .header__text:first-child {
@@ -80,26 +105,44 @@
   border-bottom: 1px solid
     color-mix(in srgb, var(--accent-pink) 30%, transparent);
 }
+.main__item.dark {
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--accent-pink-dark) 30%, transparent);
+}
 
 .main__item:hover {
   background-color: color-mix(in srgb, var(--accent-blue) 10%, transparent);
 }
-
-.item__name-wrapper,
+.main__item.dark:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--accent-blue-dark) 10%,
+    transparent
+  );
+}
+.main .item__name-wrapper,
 .item__description-wrapper {
   flex: 1;
   padding: 5px 10px;
+  display: flex;
+  justify-content: end;
 }
 
 .item__name {
   font-weight: 500;
   color: var(--text-primary);
 }
+.item__name.dark {
+  color: var(--text-dark-primary);
+}
 
 .item__description {
   color: color-mix(in srgb, var(--text-primary) 80%, transparent);
   font-size: 14px;
   line-height: 1.4;
+}
+.item__description.dark {
+  color: color-mix(in srgb, var(--text-dark-primary) 80%, transparent);
 }
 
 @media (max-width: 768px) {
@@ -126,7 +169,6 @@
   }
 }
 
-/* Стили для состояния загрузки */
 .loading {
   display: flex;
   justify-content: center;
@@ -135,6 +177,9 @@
   font-size: 18px;
   color: var(--text-primary);
   animation: pulse 1.5s infinite ease-in-out;
+}
+.loading {
+  color: var(--text-dark-primary);
 }
 
 @keyframes pulse {
@@ -149,7 +194,6 @@
   }
 }
 
-/* Стили для пустого состояния */
 .no-results {
   display: flex;
   flex-direction: column;
@@ -160,11 +204,16 @@
   color: var(--text-primary);
   padding: 20px;
 }
-
+.no-results.dark {
+  color: var(--text-dark-primary);
+}
 .no-results-icon {
   font-size: 48px;
   margin-bottom: 15px;
   color: var(--accent-pink);
+}
+.no-results-icon.dark {
+  color: var(--accent-pink-dark);
 }
 
 .no-results-text {
@@ -181,13 +230,15 @@
   padding: 5px 10px;
   border-radius: 4px;
 }
+.item__description.dark {
+  color: var(--text-dark-primary);
+}
 
 .item__description:hover {
   text-decoration: underline;
   background-color: color-mix(in srgb, var(--accent-blue) 10%, transparent);
 }
 
-/* Анимация появления элементов */
 .main__item {
   animation: fadeIn 0.3s ease-out forwards;
   opacity: 0;
@@ -199,7 +250,6 @@
   }
 }
 
-/* Адаптивные стили */
 @media (max-width: 768px) {
   .loading,
   .no-results {
@@ -230,20 +280,26 @@
   transition: all 0.2s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.button-wrapper.dark > button {
+  background-color: var(--accent-blue-dark);
+  color: var(--text-dark-primary);
+}
 
 .button-wrapper > button:hover {
   background-color: #2563eb;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-
+.button-wrapper.dark > button:hover {
+  background-color: var(--accent-blue-dark);
+}
 .button-wrapper > button:active {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .button-wrapper > button:disabled {
-  background-color: #9ca3af; /* Серый */
+  background-color: #9ca3af;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -267,4 +323,11 @@
 
 .button-wrapper {
   display: flex;
+}
+
+.main-selected {
+  position: absolute;
+  top: 100px;
+  left: 10px;
+  border: solid 1px black;
 }

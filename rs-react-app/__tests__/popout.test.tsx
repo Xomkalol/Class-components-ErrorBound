@@ -35,7 +35,7 @@ describe('Popout', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(() => new Promise(() => {}))
-    ); // never resolves
+    );
 
     render(<Popout />);
 

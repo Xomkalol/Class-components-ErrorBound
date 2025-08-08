@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import ErrorPage from './components/errorPage/errorPage';
 import Popout from './components/popout/popout';
 import About from './components/About/about';
+import { ThemeProvider } from './util/contextProvider';
 
 const router = createBrowserRouter([
   {
@@ -27,4 +28,8 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(<RouterProvider router={router} />);
+root.render(
+  <ThemeProvider>
+    <RouterProvider router={router} />
+  </ThemeProvider>
+);
