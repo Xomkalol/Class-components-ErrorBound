@@ -4,14 +4,17 @@ import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
 import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
-import { apiLink } from '../api/apiHandler';
 import Checkbox from './checkbox';
 import FlyOut from '../flyout/flyout';
 import { themeContext } from '../../util/context';
+import {
+  useGetPokemonByNameQuery,
+  useGetPokemonListQuery,
+} from '../api/createApi';
+import type { Pokemon } from '../api/apiHandler';
 
 interface MainProps {
-  pokemons: { name: string; url: string }[];
-  isLoading: boolean;
+  queryProp: string;
   error?: string;
   onRetry?: () => void;
   nextPageHandler: () => void;
@@ -20,19 +23,46 @@ interface MainProps {
 }
 
 export default function Main({
-  pokemons,
-  isLoading,
+  queryProp,
   error,
   onRetry,
   nextPageHandler,
   prevPageHandler,
   currentOffset,
 }: MainProps) {
-  const { pokemonId } = useParams();
+  // const { query } = useParams();
   const [searchParams] = useSearchParams();
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const { theme } = useContext(themeContext);
+  const queryFromUrl = searchParams.get('query') || '';
+  let pokemonsToShow: Pokemon[] = [];
+  let isSearching = !!queryFromUrl;
+  const {
+    data: pokemonData,
+    isLoading: pokemonIsLoading,
+    isSuccess,
+    // isError,
+    //  error,
+  } = useGetPokemonListQuery(currentOffset, { skip: isSearching });
+  const {
+    data: pokemonByName,
+    isLoading: isLoadingByName,
+    isSuccess: isSuccessByName,
+    //isError,
+    //  error,
+  } = useGetPokemonByNameQuery(queryProp, { skip: !isSearching });
+
+  if (queryProp && isSuccessByName) {
+    pokemonsToShow = [
+      {
+        name: pokemonByName.species.name,
+        url: `https://pokeapi.co/api/v2/pokemon/${pokemonByName.species.name}/`,
+      },
+    ];
+  } else if (!queryProp && isSuccess) {
+    pokemonsToShow = pokemonData.results;
+  }
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -40,13 +70,6 @@ export default function Main({
       setshowSkeleton(false);
     }, 1500);
   }, []);
-
-  useEffect(() => {
-    if (pokemonId) {
-      // const url = `${apiLink}/pokemon/${pokemonId}`;
-      setselectedPokemonUrl(pokemonId);
-    }
-  }, [pokemonId]);
 
   const handleShowPokemon = (url: string) => {
     const match = url.match(/\/(\d+)\/?$/);
@@ -59,12 +82,14 @@ export default function Main({
     const newOffset = currentOffset + 20;
     nextPageHandler();
     searchParams.set('offset', newOffset.toString());
+    isSearching = false;
     navigate(`/?${searchParams.toString()}`);
   };
   const handlePrevPaginationButton = () => {
     const newOffset = Math.max(currentOffset - 20, 0);
     prevPageHandler();
     searchParams.set('offset', newOffset.toString());
+    isSearching = false;
     navigate(`/?${searchParams.toString()}`);
   };
   return (
@@ -82,10 +107,10 @@ export default function Main({
           </div>
 
           <div className={`results__main ${theme}`}>
-            {isLoading || showSkeleton ? (
+            {pokemonIsLoading || showSkeleton ? (
               <Skeleton count={8} />
-            ) : pokemons.length > 0 ? (
-              pokemons.map((pokemon) => (
+            ) : pokemonsToShow.length > 0 ? (
+              pokemonsToShow.map((pokemon) => (
                 <div key={pokemon.name} className={`main__item ${theme}`}>
                   <div className={`item__name-wrapper ${theme}`}>
                     <span className={`item__name ${theme}`}>
@@ -114,13 +139,13 @@ export default function Main({
         <div className={`button-wrapper ${theme}`}>
           <button
             onClick={() => handlePrevPaginationButton()}
-            disabled={currentOffset === 0 || isLoading}
+            disabled={currentOffset === 0 || pokemonIsLoading}
           >
             Show prev
           </button>
           <button
             onClick={() => handleNextPaginationButton()}
-            disabled={isLoading}
+            disabled={pokemonIsLoading}
           >
             Show next
           </button>

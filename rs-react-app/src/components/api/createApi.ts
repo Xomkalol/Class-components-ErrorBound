@@ -1,4 +1,3 @@
-// Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 interface PokemonAbility {
   ability: {
@@ -14,6 +13,13 @@ interface PokemonForm {
   url: string;
 }
 
+interface PokemonListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: { name: string; url: string }[];
+}
+
 interface Pokemon {
   name: string;
   abilities: PokemonAbility[];
@@ -26,7 +32,7 @@ interface Pokemon {
     front_default: string;
   };
 }
-// Define a service using a base URL and expected endpoints
+
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
@@ -35,9 +41,11 @@ export const pokemonApi = createApi({
       query: (name) => `pokemon/${name}`,
       keepUnusedDataFor: 100000,
     }),
+    getPokemonList: builder.query<PokemonListResponse, number>({
+      query: (number) => `pokemon/?limit=20&offset=${number}`,
+      keepUnusedDataFor: 100000,
+    }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useGetPokemonByNameQuery } = pokemonApi;
+export const { useGetPokemonByNameQuery, useGetPokemonListQuery } = pokemonApi;
