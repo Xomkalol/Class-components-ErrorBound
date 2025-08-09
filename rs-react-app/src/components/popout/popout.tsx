@@ -1,35 +1,8 @@
-import { useContext /*useEffect, useState*/ } from 'react';
+import { useContext } from 'react';
 import './popout.css';
 import { useOutletContext } from 'react-router';
 import { themeContext } from '../../util/context';
 import { useGetPokemonByNameQuery } from '../api/createApi';
-/*
-interface PokemonAbility {
-  ability: {
-    name: string;
-    url: string;
-  };
-  is_hidden: boolean;
-  slot: number;
-}
-
-interface PokemonForm {
-  name: string;
-  url: string;
-} */
-
-/*interface PokemonData {
-  name: string;
-  abilities: PokemonAbility[];
-  forms: PokemonForm[];
-  species: {
-    name: string;
-    url: string;
-  };
-  sprites: {
-    front_default: string;
-  };
-} */
 
 interface PopoutContext {
   pokemonUrl: string;
@@ -38,9 +11,6 @@ interface PopoutContext {
 
 export default function Popout() {
   const { pokemonUrl, onClose } = useOutletContext<PopoutContext>();
-  //const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
-  // const [loading, setLoading] = useState(true);
-  //const [errorlol, setError] = useState<string | null>(null);
   const { theme } = useContext(themeContext);
   const {
     data: pokemonData,
@@ -92,31 +62,6 @@ export default function Popout() {
   } else if (isError) {
     content = <div className={`popout-error ${theme}`}>{error.toString()}</div>;
   }
-  /* useEffect(() => {
-    const fetchPokemonDetails = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch(pokemonUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.status}`);
-        }
-
-        const data: PokemonData = await response.json();
-        setPokemonData(data);
-      } catch (err) {
-        console.error('Pokemon fetch error:', err);
-        setError('Failed to load Pokemon details');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (pokemonUrl) {
-      fetchPokemonDetails();
-    }
-  }, [pokemonUrl]); */
 
   if (!pokemonUrl) return null;
 
