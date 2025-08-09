@@ -48,7 +48,7 @@ export default function Popout() {
     isSuccess,
     isError,
     error,
-  } = useGetPokemonByNameQuery('pikachu');
+  } = useGetPokemonByNameQuery(pokemonUrl);
 
   let content: React.ReactNode;
 

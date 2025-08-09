@@ -33,6 +33,7 @@ export const pokemonApi = createApi({
   endpoints: (builder) => ({
     getPokemonByName: builder.query<Pokemon, string>({
       query: (name) => `pokemon/${name}`,
+      keepUnusedDataFor: 100000,
     }),
   }),
 });

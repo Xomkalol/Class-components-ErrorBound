@@ -43,8 +43,8 @@ export default function Main({
 
   useEffect(() => {
     if (pokemonId) {
-      const url = `${apiLink}/pokemon/${pokemonId}`;
-      setselectedPokemonUrl(url);
+      // const url = `${apiLink}/pokemon/${pokemonId}`;
+      setselectedPokemonUrl(pokemonId);
     }
   }, [pokemonId]);
 
