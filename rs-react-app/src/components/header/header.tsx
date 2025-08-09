@@ -13,6 +13,8 @@ export default function Header({ onSearch }: HeaderProps) {
   const { theme, toggleTheme } = useContext(themeContext);
 
   const handleSearch = () => {
+    console.log(searchValue);
+    setSearchValue(searchValue);
     onSearch(searchValue);
   };
 

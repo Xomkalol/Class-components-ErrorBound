@@ -35,9 +35,8 @@ export default function Main({
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const { theme } = useContext(themeContext);
-  const queryFromUrl = searchParams.get('query') || '';
   let pokemonsToShow: Pokemon[] = [];
-  let isSearching = !!queryFromUrl;
+  let isSearching = !!queryProp;
   const {
     data: pokemonData,
     isLoading: pokemonIsLoading,
@@ -71,11 +70,11 @@ export default function Main({
     }, 1500);
   }, []);
 
-  const handleShowPokemon = (url: string) => {
-    const match = url.match(/\/(\d+)\/?$/);
-    const pokemonId = match ? match[1] : null;
-    navigate(`/pokemon/${pokemonId}?${searchParams.toString()}`);
-    setselectedPokemonUrl(url);
+  const handleShowPokemon = (name: string) => {
+    navigate(`/pokemon/${name}?${searchParams.toString()}`);
+    if (name) {
+      setselectedPokemonUrl(name);
+    }
   };
 
   const handleNextPaginationButton = () => {
@@ -120,7 +119,7 @@ export default function Main({
                   <div className={`item__description-wrapper ${theme}`}>
                     <span
                       className={`item__description ${theme}`}
-                      onClick={() => handleShowPokemon(pokemon.url)}
+                      onClick={() => handleShowPokemon(pokemon.name)}
                     >
                       View details
                     </span>

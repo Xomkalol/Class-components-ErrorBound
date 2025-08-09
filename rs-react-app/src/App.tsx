@@ -6,8 +6,10 @@ import './app.css';
 import { useSearchParams } from 'react-router';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
+import { useLocalStorage } from './components/localStorageHook/useLocalStorage';
 
 export default function App() {
+  const [searchValue, setSearchValue] = useLocalStorage('searchValue', '');
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
 
@@ -21,6 +23,13 @@ export default function App() {
     },
     [setSearchParams]
   );
+
+  useEffect(() => {
+    if (searchValue !== '') {
+      setSearchParams(searchValue);
+      setQuery(searchValue);
+    }
+  }, []);
 
   const handleRetry = useCallback(() => {
     handleSearch('');
