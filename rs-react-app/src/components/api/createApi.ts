@@ -20,7 +20,7 @@ interface PokemonListResponse {
   results: { name: string; url: string }[];
 }
 
-interface Pokemon {
+export interface Pokemon {
   name: string;
   abilities: PokemonAbility[];
   forms: PokemonForm[];

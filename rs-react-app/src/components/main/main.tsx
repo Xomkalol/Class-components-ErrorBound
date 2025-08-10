@@ -3,7 +3,7 @@ import './main.css';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
-import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router';
+import { Outlet, useNavigate, useSearchParams } from 'react-router';
 import Checkbox from './checkbox';
 import FlyOut from '../flyout/flyout';
 import { themeContext } from '../../util/context';
@@ -11,7 +11,6 @@ import {
   useGetPokemonByNameQuery,
   useGetPokemonListQuery,
 } from '../api/createApi';
-import type { Pokemon } from '../api/apiHandler';
 
 interface MainProps {
   queryProp: string;
@@ -21,6 +20,10 @@ interface MainProps {
   prevPageHandler: () => void;
   currentOffset: number;
 }
+type PokemonToShow = {
+  name: string;
+  url: string;
+};
 
 export default function Main({
   queryProp,
@@ -30,27 +33,20 @@ export default function Main({
   prevPageHandler,
   currentOffset,
 }: MainProps) {
-  // const { query } = useParams();
   const [searchParams] = useSearchParams();
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const { theme } = useContext(themeContext);
-  let pokemonsToShow: Pokemon[] = [];
+  let pokemonsToShow: PokemonToShow[] = [];
   let isSearching = !!queryProp;
   const {
     data: pokemonData,
     isLoading: pokemonIsLoading,
     isSuccess,
-    // isError,
-    //  error,
+    refetch,
   } = useGetPokemonListQuery(currentOffset, { skip: isSearching });
-  const {
-    data: pokemonByName,
-    isLoading: isLoadingByName,
-    isSuccess: isSuccessByName,
-    //isError,
-    //  error,
-  } = useGetPokemonByNameQuery(queryProp, { skip: !isSearching });
+  const { data: pokemonByName, isSuccess: isSuccessByName } =
+    useGetPokemonByNameQuery(queryProp, { skip: !isSearching });
 
   if (queryProp && isSuccessByName) {
     pokemonsToShow = [
@@ -148,6 +144,7 @@ export default function Main({
           >
             Show next
           </button>
+          <button onClick={refetch}>Refetch</button>
         </div>
 
         <Outlet
