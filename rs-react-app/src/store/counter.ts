@@ -15,7 +15,7 @@ export const counterSlice = createSlice({
   name: 'pokemon counter',
   initialState,
   reducers: {
-    addPokemon: (state, action) => {
+    tooglePokemon: (state, action) => {
       const index = state.pokemons.findIndex(
         (p) => p.url === action.payload.url
       );
