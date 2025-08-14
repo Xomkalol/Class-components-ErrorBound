@@ -18,6 +18,11 @@ export default function Header({ onSearch }: HeaderProps) {
     onSearch(searchValue);
   };
 
+  const handleClear = async () => {
+    setSearchValue('');
+    onSearch('');
+  };
+
   return (
     <div className={`upper__container ${theme}`} data-testid="upper-container">
       <Link
@@ -45,6 +50,12 @@ export default function Header({ onSearch }: HeaderProps) {
             data-testid="search-button"
           >
             Search
+          </button>
+          <button
+            className={`controls__button ${theme}`}
+            onClick={() => handleClear()}
+          >
+            Clear
           </button>
           <button className={`controls__button ${theme}`} onClick={toggleTheme}>
             switch theme
