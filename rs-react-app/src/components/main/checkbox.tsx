@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addPokemon, type pokemonState } from '../../store/counter';
+import { togglePokemon, type pokemonState } from '../../store/counter';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 
@@ -14,7 +14,7 @@ export default function CheckBox(checkBoxProps: { pokemon: pokemonState }) {
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
-    dispatch(addPokemon(checkBoxProps.pokemon));
+    dispatch(togglePokemon(checkBoxProps.pokemon));
     console.log('Current pokemons:', pokeMonState);
   };
 
