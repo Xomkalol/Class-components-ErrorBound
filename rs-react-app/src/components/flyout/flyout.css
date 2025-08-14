@@ -1,7 +1,7 @@
 .main-selected.main-selected {
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   word-break: break-word;
-  padding: 0.6rem 0.8rem;
+  padding: 1rem 0.5rem;
   background-color: var(--accent-pink);
   border-left: 3px solid var(--cta-button);
   color: var(--text-primary);
@@ -9,8 +9,17 @@
   background-clip: padding-box;
 }
 
+.flyout__name {
+  padding: 10px 0px;
+}
+.flyout__button-wrapper {
+  display: flex;
+  gap: 15px;
+}
+
 .selected__unselect-button,
 .selected__download-button {
+  font-size: 1rem;
   padding: 0.75rem 1rem;
   border: none;
   border-radius: 6px;
