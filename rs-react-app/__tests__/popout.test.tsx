@@ -58,7 +58,6 @@ describe('Popout', () => {
 
     const loading = screen.getByText(/loading.../i);
     expect(loading).toBeInTheDocument();
-    expect(loading.textContent?.toLowerCase()).toContain('loading...');
   });
 
   it('отображает данные покемона после загрузки', async () => {
