@@ -1,4 +1,3 @@
-import type { pokemonState, savedPokemonState } from '../store/counter';
 interface PokemonAbility {
   ability: {
     name: string;

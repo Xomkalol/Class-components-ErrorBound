@@ -9,7 +9,7 @@ import { store } from './store/store';
 import { useLocalStorage } from './components/localStorageHook/useLocalStorage';
 
 export default function App() {
-  const [searchValue, setSearchValue] = useLocalStorage('searchValue', '');
+  const [searchValue] = useLocalStorage('searchValue', '');
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
 
