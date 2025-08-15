@@ -3,99 +3,44 @@ import Header from './components/header/header';
 import Main from './components/main/main';
 import ErrorBoundary from './components/errorBoundary/errorBoundary';
 import './app.css';
-import searchPokemon from './components/header/headerHandler';
-import getFirstLoad, { apiLink } from './components/api/apiHandler';
 import { useSearchParams } from 'react-router';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
+import { useLocalStorage } from './components/localStorageHook/useLocalStorage';
 
 export default function App() {
-  const [pokemons, setPokemons] = useState<{ name: string; url: string }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [searchValue] = useLocalStorage('searchValue', '');
   const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState('');
 
   const offset = parseInt(searchParams.get('offset') || '0', 10);
 
-  const fetchInitialPokemons = useCallback(
-    async (offset: number) => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `${apiLink}/pokemon/?limit=20&offset=${offset}`
-        );
-        const data = await response.json();
-        setPokemons(data.results);
-        setIsLoading(false);
-        setError(undefined);
-
-        setSearchParams({ limit: '20', offset: offset.toString() });
-      } catch (err) {
-        console.error('Error loading initial pokemons:', err);
-        setIsLoading(false);
-        setError('Failed to load pokemons');
-      }
+  const handleSearch = useCallback(
+    (query: string) => {
+      console.log(query);
+      setQuery(query);
+      setSearchParams(query ? { query, offset: '0' } : { offset: '0' });
     },
     [setSearchParams]
   );
 
   useEffect(() => {
-    fetchInitialPokemons(offset);
-  }, [offset, fetchInitialPokemons]);
-
-  const handleSearch = useCallback(async (query: string) => {
-    if (!query.trim()) {
-      try {
-        setIsLoading(true);
-        const initialPokemons = await getFirstLoad();
-        setPokemons(initialPokemons);
-        setIsLoading(false);
-        setError(undefined);
-      } catch (err) {
-        setIsLoading(false);
-        setError('Failed to load pokemons. Please try again.');
-        console.log(err);
-      }
-      return;
-    }
-
-    setIsLoading(true);
-    setError(undefined);
-
-    try {
-      const pokemonData = await searchPokemon(query);
-      if (pokemonData) {
-        setPokemons([
-          {
-            name: pokemonData.name,
-            url:
-              pokemonData.url ||
-              `https://pokeapi.co/api/v2/pokemon/${pokemonData.id}/`,
-          },
-        ]);
-        setIsLoading(false);
-        setError(undefined);
-      } else {
-        setPokemons([]);
-        setIsLoading(false);
-        setError('Pokemon not found. Try another name.');
-      }
-    } catch (err) {
-      console.error('Search error:', err);
-      setPokemons([]);
-      setIsLoading(false);
-      setError('Search failed. Please check your connection and try again.');
+    if (searchValue !== '') {
+      setSearchParams(searchValue);
+      setQuery(searchValue);
     }
   }, []);
 
   const handleRetry = useCallback(() => {
-    setError(undefined);
     handleSearch('');
   }, [handleSearch]);
 
   const handlePagination = useCallback(
     (newOffset: number) => {
-      setSearchParams({ limit: '20', offset: newOffset.toString() });
+      const currentQuery = searchParams.get('query');
+      const params: Record<string, string> = { offset: newOffset.toString() };
+      if (currentQuery) params.query = currentQuery;
+      setSearchParams(params);
     },
     [setSearchParams]
   );
@@ -114,9 +59,7 @@ export default function App() {
         <ErrorBoundary>
           <Header onSearch={handleSearch} />
           <Main
-            pokemons={pokemons}
-            isLoading={isLoading}
-            error={error}
+            queryProp={query}
             onRetry={handleRetry}
             nextPageHandler={nextPageHandler}
             prevPageHandler={prevPageHandler}

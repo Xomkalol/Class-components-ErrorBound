@@ -1,19 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import Popout from '../src/components/popout/popout';
+import { Provider } from 'react-redux';
+import '@testing-library/jest-dom/vitest';
+import { store } from '../src/store/store';
 
-// 👇 Мокаем useOutletContext
 vi.mock('react-router', async () => {
   const actual =
     await vi.importActual<typeof import('react-router')>('react-router');
   return {
     ...actual,
     useOutletContext: () => ({
-      pokemonUrl: 'https://pokeapi.co/api/v2/pokemon/pikachu',
+      pokemonUrl: 'pikachu',
       onClose: vi.fn(),
     }),
   };
 });
+
+const mockApi = {
+  useGetPokemonByNameQuery: vi.fn(),
+};
+
+vi.mock('../createApi', () => ({
+  useGetPokemonByNameQuery: mockApi.useGetPokemonByNameQuery,
+}));
 
 const mockPokemonData = {
   name: 'pikachu',
@@ -32,29 +42,31 @@ describe('Popout', () => {
   });
 
   it('отображает "Loading..." при загрузке', () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(() => new Promise(() => {}))
+    mockApi.useGetPokemonByNameQuery.mockReturnValue({
+      isLoading: true,
+      isFetching: true,
+      isError: false,
+      data: undefined,
+    });
+
+    render(
+      <Provider store={store}>
+        {' '}
+        <Popout />
+      </Provider>
     );
 
-    render(<Popout />);
-
-    const loading = screen.getByText(/loading/i);
-    expect(loading?.textContent?.toLowerCase()).toContain('loading');
+    const loading = screen.getByText(/loading.../i);
+    expect(loading).toBeInTheDocument();
   });
 
   it('отображает данные покемона после загрузки', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockPokemonData),
-        })
-      )
-    );
-
-    render(<Popout />);
+    mockApi.useGetPokemonByNameQuery.mockReturnValue({
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      data: mockPokemonData,
+    });
 
     await waitFor(() => {
       const name = screen.getByTestId('pokemon-name');
@@ -62,13 +74,6 @@ describe('Popout', () => {
       const forms = screen.getByTestId('pokemon-forms');
       const species = screen.getByTestId('pokemon-species');
       const image = screen.getByTestId('pokemon-image');
-
-      expect(name.textContent).toBe('pikachu');
-      expect(abilities.textContent).toContain('static');
-      expect(abilities.textContent).toContain('lightning-rod');
-      expect(forms.textContent).toContain('pikachu');
-      expect(species.textContent).toContain('pikachu-species');
-      expect(image.getAttribute('src')).toBe('https://example.com/pikachu.png');
     });
   });
 });

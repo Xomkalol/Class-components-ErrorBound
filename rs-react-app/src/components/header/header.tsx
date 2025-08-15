@@ -13,7 +13,14 @@ export default function Header({ onSearch }: HeaderProps) {
   const { theme, toggleTheme } = useContext(themeContext);
 
   const handleSearch = () => {
+    console.log(searchValue);
+    setSearchValue(searchValue);
     onSearch(searchValue);
+  };
+
+  const handleClear = async () => {
+    setSearchValue('');
+    onSearch('');
   };
 
   return (
@@ -43,6 +50,12 @@ export default function Header({ onSearch }: HeaderProps) {
             data-testid="search-button"
           >
             Search
+          </button>
+          <button
+            className={`controls__button ${theme}`}
+            onClick={() => handleClear()}
+          >
+            Clear
           </button>
           <button className={`controls__button ${theme}`} onClick={toggleTheme}>
             switch theme

@@ -1,4 +1,3 @@
-import type { pokemonState, savedPokemonState } from '../store/counter';
 interface PokemonAbility {
   ability: {
     name: string;
@@ -26,43 +25,39 @@ interface PokemonData {
   };
 }
 
-export default async function createCSVFile(pokeMonState: savedPokemonState) {
-  try {
-    const pokemonDataArray = await Promise.all(
-      pokeMonState.pokemons.map(async (pokemon: pokemonState) => {
-        const data = await getPokemonData(pokemon.url);
-        return data
-          ? {
-              name: data.name,
-              abilities: data.abilities.map((a) => a.ability.name).join(', '),
-              forms: data.forms.map((f) => f.name).join(', '),
-              species: data.species.name,
-            }
-          : {
-              name: 'Unknown',
-              abilities: 'Error',
-              forms: 'Error',
-              species: 'Error',
-            };
-      })
-    );
-    const csvContent = formatToCSV(pokemonDataArray);
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'selected-pokemons.csv';
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Failed to generate CSV:', error);
-  }
+type pokemonDataArray = {
+  name: string;
+  abilities: string;
+  forms: string;
+  species: string;
+};
+
+export default async function createCSVFile(data: PokemonData[]) {
+  const pokemonDataArray: pokemonDataArray[] = [];
+  data.map((pokemon) => {
+    const pokemonData = {
+      name: pokemon.name,
+      abilities: pokemon.abilities.map((a) => a.ability.name).join(', '),
+      forms: pokemon.forms.map((f) => f.name).join(', '),
+      species: pokemon.species.name,
+    };
+    pokemonDataArray.push(pokemonData);
+  });
+  console.log(pokemonDataArray);
+  const csvContent = formatToCSV(pokemonDataArray);
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'selected-pokemons.csv';
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
-const getPokemonData = async (pokemonUrl: string) => {
+export const getPokemonData = async (pokemonUrl: string) => {
   try {
     const response = await fetch(pokemonUrl);
     if (!response.ok) {

@@ -2,6 +2,8 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import Main from '../src/components/main/main';
+import { store } from '../src/store/store';
+import { Provider } from 'react-redux';
 
 afterEach(() => {
   cleanup();
@@ -11,15 +13,19 @@ interface MockRootState {
     pokemons: { name: string; url: string }[];
   };
 }
-vi.mock('react-redux', () => {
-  const mockUseSelector = <T,>(selector: (state: MockRootState) => T): T => {
-    const mockState: MockRootState = { counter: { pokemons: [] } };
+vi.mock('react-redux', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-redux')>('react-redux');
+
+  const mockUseSelector = <T,>(selector: (state: any) => T): T => {
+    const mockState = { counter: { pokemons: [] } };
     return selector(mockState);
   };
 
   const mockUseDispatch = () => vi.fn();
 
   return {
+    ...actual,
     useSelector: mockUseSelector,
     useDispatch: mockUseDispatch,
   };
@@ -47,6 +53,7 @@ vi.mock('../skeleton/skeleton', () => ({
 
 const renderWithRouter = (props = {}) => {
   const defaultProps = {
+    queryProp: '',
     pokemons: [] as { name: string; url: string }[],
     isLoading: false,
     currentOffset: 0,
@@ -55,9 +62,9 @@ const renderWithRouter = (props = {}) => {
   };
 
   render(
-    <MemoryRouter>
+    <Provider store={store}>
       <Main {...defaultProps} {...props} />
-    </MemoryRouter>
+    </Provider>
   );
 };
 

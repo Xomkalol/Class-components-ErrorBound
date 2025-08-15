@@ -15,7 +15,7 @@ export const counterSlice = createSlice({
   name: 'pokemon counter',
   initialState,
   reducers: {
-    addPokemon: (state, action) => {
+    togglePokemon: (state, action) => {
       const index = state.pokemons.findIndex(
         (p) => p.url === action.payload.url
       );
@@ -31,6 +31,6 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { addPokemon, clearState } = counterSlice.actions;
+export const { togglePokemon, clearState } = counterSlice.actions;
 
 export default counterSlice.reducer;
