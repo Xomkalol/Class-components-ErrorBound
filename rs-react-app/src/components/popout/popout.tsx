@@ -3,6 +3,7 @@ import './popout.css';
 import { useOutletContext } from 'react-router';
 import { themeContext } from '../../util/context';
 import { useGetPokemonByNameQuery } from '../api/createApi';
+import Image from 'next/image';
 
 interface PopoutContext {
   pokemonUrl: string;
@@ -32,7 +33,7 @@ export default function Popout() {
             {pokemonData.name}
           </h2>
           {pokemonData.sprites.front_default && (
-            <img
+            <Image
               src={pokemonData.sprites.front_default}
               alt={pokemonData.name}
               className={`pokemon-image ${theme}`}
