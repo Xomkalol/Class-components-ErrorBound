@@ -3,7 +3,7 @@ import './main.css';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
-import { Outlet, useNavigate, useSearchParams } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import Checkbox from './checkbox';
 import FlyOut from '../flyout/flyout';
 import { themeContext } from '../../util/context';
@@ -11,6 +11,8 @@ import {
   useGetPokemonByNameQuery,
   useGetPokemonListQuery,
 } from '../api/createApi';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import router from 'next/router';
 
 interface MainProps {
   queryProp: string;
@@ -33,10 +35,10 @@ export default function Main({
   prevPageHandler,
   currentOffset,
 }: MainProps) {
-  const [searchParams] = useSearchParams();
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const { theme } = useContext(themeContext);
+  const searchParams = useSearchParams();
   let pokemonsToShow: PokemonToShow[] = [];
   let isSearching = !!queryProp;
   const {
@@ -59,7 +61,6 @@ export default function Main({
     pokemonsToShow = pokemonData.results;
   }
 
-  const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
       setshowSkeleton(false);
@@ -67,7 +68,8 @@ export default function Main({
   }, []);
 
   const handleShowPokemon = (name: string) => {
-    navigate(`/pokemon/${name}?${searchParams.toString()}`);
+    const updatedPath = `pokemon/${name}`;
+    router.push(updatedPath);
     if (name) {
       setselectedPokemonUrl(name);
     }
@@ -76,16 +78,16 @@ export default function Main({
   const handleNextPaginationButton = () => {
     const newOffset = currentOffset + 20;
     nextPageHandler();
-    searchParams.set('offset', newOffset.toString());
+    const updatedPath = `offset=${newOffset.toString()}`;
+    router.push(updatedPath);
     isSearching = false;
-    navigate(`/?${searchParams.toString()}`);
   };
   const handlePrevPaginationButton = () => {
     const newOffset = Math.max(currentOffset - 20, 0);
     prevPageHandler();
-    searchParams.set('offset', newOffset.toString());
+    const updatedPath = `offset=${newOffset.toString()}`;
+    router.push(updatedPath);
     isSearching = false;
-    navigate(`/?${searchParams.toString()}`);
   };
   return (
     <ErrorBoundary>
@@ -151,7 +153,8 @@ export default function Main({
           context={{
             pokemonUrl: selectedPokemonUrl,
             onClose: () => {
-              navigate(`/?${searchParams.toString()}`);
+              const updatedPath = `/?${searchParams.toString()}`;
+              router.push(updatedPath);
             },
           }}
         />

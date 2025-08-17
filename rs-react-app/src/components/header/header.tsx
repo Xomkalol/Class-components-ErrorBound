@@ -1,6 +1,6 @@
 import './header.css';
 import { useLocalStorage } from '../localStorageHook/useLocalStorage';
-import { Link } from 'react-router';
+import Link from 'next/link';
 import { themeContext } from '../../util/context';
 import { useContext } from 'react';
 
@@ -26,7 +26,7 @@ export default function Header({ onSearch }: HeaderProps) {
   return (
     <div className={`upper__container ${theme}`} data-testid="upper-container">
       <Link
-        to={'/about'}
+        href={'/about'}
         className={`about-link ${theme}`}
         data-testid="about-link"
       >
