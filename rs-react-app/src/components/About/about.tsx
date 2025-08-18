@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { themeContext } from '../../util/context';
 import Image from 'next/image';
 import '../../colors.css';
+import rsImage from '../../public/rslogo.png';
 
 export default function About() {
   const { theme } = useContext(themeContext);
@@ -14,12 +15,7 @@ export default function About() {
       <div className={`rss__link-wrapper ${theme}`}>
         <Link href={'https://rs.school/'}>
           {' '}
-          <Image
-            src="../../assets/rslogo.png"
-            alt="Rss scope"
-            width={100}
-            height={100}
-          />
+          <Image src={rsImage} alt="Rss scope" width={100} height={100} />
         </Link>
         <Link href={'/'}>GO HOME</Link>
       </div>
