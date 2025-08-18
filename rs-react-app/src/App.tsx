@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Header from './components/header/header';
 import Main from './components/main/main';
 import './app.css';
+import './colors.css';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
