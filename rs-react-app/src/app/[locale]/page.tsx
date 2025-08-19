@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import Client from './client';
 
 function LoadingFallback() {
-  const t = useTranslations('search');
+  // const t = useTranslations('search');
 
   return <div>...loading</div>;
 }
@@ -13,7 +13,7 @@ async function HomePageContent() {
 }
 
 export default function HomePage() {
-  const t = useTranslations('HomePage');
+  //  const t = useTranslations('HomePage');
   return (
     <Suspense fallback={<LoadingFallback />}>
       <HomePageContent />

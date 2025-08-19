@@ -1,6 +1,22 @@
 {
-  "HomePage": {
-    "title": "Hello world!",
-    "about": "Go to the about page"
+  "Main": {
+    "about": "About",
+    "search": "Search",
+    "clear": "Clear",
+    "switch": "Switch theme",
+    "switchLang": "Switch to ru",
+    "pokemons": "Pokemons",
+    "pokemonName": "Pokemon Name",
+    "details": "Details",
+    "view": "View Details",
+    "showPrev": "Show prev",
+    "showNext": "Show next",
+    "refetch": "Refetch",
+    "noPokemonsFound": "No pokemons found. Try a different search."
+  },
+  "About": {
+    "welcome": "Welcome to About Page!",
+    "name": "My name is Anatoly! Just made my pokemon search with react app!",
+    "home": "GO HOME"
   }
 }

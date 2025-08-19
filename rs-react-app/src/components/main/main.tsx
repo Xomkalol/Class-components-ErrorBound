@@ -13,6 +13,7 @@ import {
 } from '../api/createApi';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import router from 'next/router';
+import { useTranslations } from 'next-intl';
 
 interface MainProps {
   queryProp: string;
@@ -41,6 +42,7 @@ export default function Main({
   const searchParams = useSearchParams();
   let pokemonsToShow: PokemonToShow[] = [];
   let isSearching = !!queryProp;
+  const t = useTranslations();
   const {
     data: pokemonData,
     isLoading: pokemonIsLoading,
@@ -92,15 +94,17 @@ export default function Main({
   return (
     <ErrorBoundary>
       <main className={`main__container ${theme}`}>
-        <h2 className={`main__header ${theme}`}>Pokemons</h2>
+        <h2 className={`main__header ${theme}`}>{t('Main.pokemons')}</h2>
 
         {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
         <FlyOut />
 
         <div className={`result__wrapper ${theme}`}>
           <div className={`result__header ${theme}`}>
-            <span className={`header__text ${theme}`}>Pokemon Name</span>
-            <span className={`header__text ${theme}`}>Details</span>
+            <span className={`header__text ${theme}`}>
+              {t('Main.pokemonName')}
+            </span>
+            <span className={`header__text ${theme}`}>{t('Main.details')}</span>
           </div>
 
           <div className={`results__main ${theme}`}>
@@ -119,7 +123,7 @@ export default function Main({
                       className={`item__description ${theme}`}
                       onClick={() => handleShowPokemon(pokemon.name)}
                     >
-                      View details
+                      {t('Main.view')}
                     </span>
                     <Checkbox pokemon={pokemon} />
                   </div>
@@ -127,7 +131,7 @@ export default function Main({
               ))
             ) : (
               <div className={`no-results ${theme}`}>
-                No pokemons found. Try a different search.
+                {t('Main.noPokemonsFound')}
               </div>
             )}
           </div>
@@ -138,15 +142,15 @@ export default function Main({
             onClick={() => handlePrevPaginationButton()}
             disabled={currentOffset === 0 || pokemonIsLoading}
           >
-            Show prev
+            {t('Main.showPrev')}
           </button>
           <button
             onClick={() => handleNextPaginationButton()}
             disabled={pokemonIsLoading}
           >
-            Show next
+            {t('Main.showNext')}
           </button>
-          <button onClick={refetch}>Refetch</button>
+          <button onClick={refetch}>{t('Main.refetch')}</button>
         </div>
 
         <Outlet

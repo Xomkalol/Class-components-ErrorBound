@@ -1,14 +1,17 @@
 import './header.css';
 import { useLocalStorage } from '../localStorageHook/useLocalStorage';
-import Link from 'next/link';
+import { Link } from '../../i18n/navigation';
 import { themeContext } from '../../util/context';
 import { useContext } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
 }
 
 export default function Header({ onSearch }: HeaderProps) {
+  const locale = useLocale();
+  const t = useTranslations();
   const [searchValue, setSearchValue] = useLocalStorage('searchValue', '');
   const { theme, toggleTheme } = useContext(themeContext);
 
@@ -30,7 +33,7 @@ export default function Header({ onSearch }: HeaderProps) {
         className={`about-link ${theme}`}
         data-testid="about-link"
       >
-        About
+        {t('Main.about')}
       </Link>
       <div className="upper__controls-wrapper">
         <div className={`controls__input-wrapper ${theme}`}>
@@ -49,17 +52,24 @@ export default function Header({ onSearch }: HeaderProps) {
             onClick={() => handleSearch()}
             data-testid="search-button"
           >
-            Search
+            {t('Main.search')}
           </button>
           <button
             className={`controls__button ${theme}`}
             onClick={() => handleClear()}
           >
-            Clear
+            {t('Main.clear')}
           </button>
           <button className={`controls__button ${theme}`} onClick={toggleTheme}>
-            switch theme
+            {t('Main.switch')}
           </button>
+          <Link
+            href={'/'}
+            className={`about-link ${theme}`}
+            locale={locale == 'ru' ? 'en' : 'ru'}
+          >
+            {t('Main.switchLang')}
+          </Link>
         </div>
       </div>
     </div>
