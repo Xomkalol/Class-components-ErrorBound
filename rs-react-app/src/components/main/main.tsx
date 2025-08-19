@@ -42,6 +42,8 @@ export default function Main({
   const searchParams = useSearchParams();
   let pokemonsToShow: PokemonToShow[] = [];
   let isSearching = !!queryProp;
+  const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations();
   const {
     data: pokemonData,
@@ -76,20 +78,21 @@ export default function Main({
       setselectedPokemonUrl(name);
     }
   };
+  const createPathWithOffset = (offset: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('offset', offset.toString());
+    return `${pathname}?${params.toString()}`;
+  };
 
   const handleNextPaginationButton = () => {
     const newOffset = currentOffset + 20;
     nextPageHandler();
-    const updatedPath = `offset=${newOffset.toString()}`;
-    router.push(updatedPath);
-    isSearching = false;
+    router.push(createPathWithOffset(newOffset));
   };
   const handlePrevPaginationButton = () => {
     const newOffset = Math.max(currentOffset - 20, 0);
     prevPageHandler();
-    const updatedPath = `offset=${newOffset.toString()}`;
-    router.push(updatedPath);
-    isSearching = false;
+    router.push(createPathWithOffset(newOffset));
   };
   return (
     <ErrorBoundary>

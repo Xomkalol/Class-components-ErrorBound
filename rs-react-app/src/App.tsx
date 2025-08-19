@@ -19,12 +19,16 @@ export default function App() {
 
   const offset = parseInt(searchParams.get('offset') || '0', 10);
 
-  const handleSearch = useCallback((query: string) => {
-    console.log(query);
-    setQuery(query);
-    const updatedPath = query ? `${pathname}?${query}` : pathname;
-    router.push(updatedPath);
-  }, []);
+  const handleSearch = useCallback(
+    (query: string) => {
+      setQuery(query);
+      const updatedPath = query
+        ? `${pathname}?query=${encodeURIComponent(query)}`
+        : pathname;
+      router.push(updatedPath);
+    },
+    [pathname, router]
+  );
 
   useEffect(() => {
     if (searchValue !== '') {
