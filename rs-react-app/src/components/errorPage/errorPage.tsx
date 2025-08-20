@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from '../../i18n/navigation';
 import './errorPage.css';
 import { themeContext } from '../../util/context';
 import { useContext } from 'react';
@@ -15,7 +15,7 @@ export default function ErrorPage() {
           The page you&apos;re looking for encountered an error.
         </p>
         <Link
-          to="/"
+          href="/"
           className={`error-page__link ${theme}`}
           data-testid="back-home-link"
         >

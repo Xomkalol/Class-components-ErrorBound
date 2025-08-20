@@ -3,7 +3,7 @@ import './main.css';
 import Skeleton from '../skeleton/skeleton';
 import ErrorBoundary from '../errorBoundary/errorBoundary';
 import ApiErrorBanner from '../api/apiErrorBanner';
-import { Outlet, useNavigate, useSearchParams } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import Checkbox from './checkbox';
 import FlyOut from '../flyout/flyout';
 import { themeContext } from '../../util/context';
@@ -11,6 +11,9 @@ import {
   useGetPokemonByNameQuery,
   useGetPokemonListQuery,
 } from '../api/createApi';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import router from 'next/router';
+import { useTranslations } from 'next-intl';
 
 interface MainProps {
   queryProp: string;
@@ -33,12 +36,15 @@ export default function Main({
   prevPageHandler,
   currentOffset,
 }: MainProps) {
-  const [searchParams] = useSearchParams();
   const [selectedPokemonUrl, setselectedPokemonUrl] = useState('');
   const [showSkeleton, setshowSkeleton] = useState(true);
   const { theme } = useContext(themeContext);
+  const searchParams = useSearchParams();
   let pokemonsToShow: PokemonToShow[] = [];
   let isSearching = !!queryProp;
+  const router = useRouter();
+  const pathname = usePathname();
+  const t = useTranslations();
   const {
     data: pokemonData,
     isLoading: pokemonIsLoading,
@@ -59,7 +65,6 @@ export default function Main({
     pokemonsToShow = pokemonData.results;
   }
 
-  const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
       setshowSkeleton(false);
@@ -67,38 +72,42 @@ export default function Main({
   }, []);
 
   const handleShowPokemon = (name: string) => {
-    navigate(`/pokemon/${name}?${searchParams.toString()}`);
+    const updatedPath = `pokemon/${name}`;
+    router.push(updatedPath);
     if (name) {
       setselectedPokemonUrl(name);
     }
+  };
+  const createPathWithOffset = (offset: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('offset', offset.toString());
+    return `${pathname}?${params.toString()}`;
   };
 
   const handleNextPaginationButton = () => {
     const newOffset = currentOffset + 20;
     nextPageHandler();
-    searchParams.set('offset', newOffset.toString());
-    isSearching = false;
-    navigate(`/?${searchParams.toString()}`);
+    router.push(createPathWithOffset(newOffset));
   };
   const handlePrevPaginationButton = () => {
     const newOffset = Math.max(currentOffset - 20, 0);
     prevPageHandler();
-    searchParams.set('offset', newOffset.toString());
-    isSearching = false;
-    navigate(`/?${searchParams.toString()}`);
+    router.push(createPathWithOffset(newOffset));
   };
   return (
     <ErrorBoundary>
       <main className={`main__container ${theme}`}>
-        <h2 className={`main__header ${theme}`}>Pokemons</h2>
+        <h2 className={`main__header ${theme}`}>{t('Main.pokemons')}</h2>
 
         {error && <ApiErrorBanner error={error} onRetry={onRetry} />}
         <FlyOut />
 
         <div className={`result__wrapper ${theme}`}>
           <div className={`result__header ${theme}`}>
-            <span className={`header__text ${theme}`}>Pokemon Name</span>
-            <span className={`header__text ${theme}`}>Details</span>
+            <span className={`header__text ${theme}`}>
+              {t('Main.pokemonName')}
+            </span>
+            <span className={`header__text ${theme}`}>{t('Main.details')}</span>
           </div>
 
           <div className={`results__main ${theme}`}>
@@ -117,7 +126,7 @@ export default function Main({
                       className={`item__description ${theme}`}
                       onClick={() => handleShowPokemon(pokemon.name)}
                     >
-                      View details
+                      {t('Main.view')}
                     </span>
                     <Checkbox pokemon={pokemon} />
                   </div>
@@ -125,7 +134,7 @@ export default function Main({
               ))
             ) : (
               <div className={`no-results ${theme}`}>
-                No pokemons found. Try a different search.
+                {t('Main.noPokemonsFound')}
               </div>
             )}
           </div>
@@ -136,22 +145,23 @@ export default function Main({
             onClick={() => handlePrevPaginationButton()}
             disabled={currentOffset === 0 || pokemonIsLoading}
           >
-            Show prev
+            {t('Main.showPrev')}
           </button>
           <button
             onClick={() => handleNextPaginationButton()}
             disabled={pokemonIsLoading}
           >
-            Show next
+            {t('Main.showNext')}
           </button>
-          <button onClick={refetch}>Refetch</button>
+          <button onClick={refetch}>{t('Main.refetch')}</button>
         </div>
 
         <Outlet
           context={{
             pokemonUrl: selectedPokemonUrl,
             onClose: () => {
-              navigate(`/?${searchParams.toString()}`);
+              const updatedPath = `/?${searchParams.toString()}`;
+              router.push(updatedPath);
             },
           }}
         />
