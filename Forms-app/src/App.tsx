@@ -1,6 +1,11 @@
 import './App.css';
+import { createPortal } from 'react-dom';
+import Modal from './components/modal/modal';
+import { useState } from 'react';
 
 function App() {
+  const [isModalOpen, setModal] = useState(true);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
@@ -16,6 +21,7 @@ function App() {
           </button>
         </div>
       </div>
+      {isModalOpen ? createPortal(<Modal></Modal>, document.body) : null}
     </div>
   );
 }
