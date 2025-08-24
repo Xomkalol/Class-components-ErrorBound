@@ -1,7 +1,7 @@
-export default function ControlForm() {
+export default function UnControlForm() {
   return (
     <form>
-      <h1>controlled Form</h1>
+      <h1>Uncontrolled Form</h1>
       <div>
         <label htmlFor="name">Name</label>
         <input id="name" type="text" />

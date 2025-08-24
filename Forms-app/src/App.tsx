@@ -5,8 +5,10 @@ import { useState } from 'react';
 
 function App() {
   const [isModalOpen, setModal] = useState(true);
+  const [showForm, setShowForm] = useState('');
 
-  const handeToggleModal = () => {
+  const handeToggleModal = (form: string) => {
+    setShowForm(form);
     if (isModalOpen) {
       setModal(false);
     } else {
@@ -22,18 +24,24 @@ function App() {
         </h1>
         <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row justify-center">
           <button
-            onClick={handeToggleModal}
+            onClick={() => handeToggleModal('control')}
             className="px-6 py-3 bg-blue-50 text-blue-600 font-medium rounded-lg shadow hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 transform hover:scale-105 cursor-pointer"
           >
             Controlled form
           </button>
-          <button className="px-6 py-3 bg-red-50 text-red-600 font-medium rounded-lg shadow hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 transform hover:scale-105 cursor-pointer">
+          <button
+            onClick={() => handeToggleModal('uncontroled')}
+            className="px-6 py-3 bg-red-50 text-red-600 font-medium rounded-lg shadow hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 transform hover:scale-105 cursor-pointer"
+          >
             Uncontrolled form
           </button>
         </div>
       </div>
       {isModalOpen
-        ? createPortal(<Modal handle={handeToggleModal}></Modal>, document.body)
+        ? createPortal(
+            <Modal handle={handeToggleModal} form={showForm}></Modal>,
+            document.body
+          )
         : null}
     </div>
   );
