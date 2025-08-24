@@ -1,32 +1,38 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store/store';
 
-export interface CounterState {
-  value: number;
+export interface FormState {
+  name: string;
+  age: string;
+  email: string;
+  password: string;
+  terms: string;
+  gender: string;
+  country: string;
 }
 
-const initialState: CounterState = {
-  value: 0,
+const initialState: FormState = {
+  name: '',
+  age: '',
+  email: '',
+  password: '',
+  terms: '',
+  gender: '',
+  country: '',
 };
 
-export const counterSlice = createSlice({
+export const formSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
-    },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
+    setFormData: (state, action: PayloadAction<FormState>) => {
+      return action.payload;
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const { setFormData } = formSlice.actions;
 
-export const selectCount = (state: RootState) => state.counter.value;
+export const selectFormData = (state: { form: FormState }) => state.form;
 
-export default counterSlice.reducer;
+export default formSlice.reducer;

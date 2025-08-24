@@ -2,10 +2,12 @@ import './App.css';
 import { createPortal } from 'react-dom';
 import Modal from './components/modal/modal';
 import { useState } from 'react';
+import { useAppSelector } from './store/hooks';
 
 function App() {
   const [isModalOpen, setModal] = useState(true);
   const [showForm, setShowForm] = useState('');
+  const form = useAppSelector((state) => state.form);
 
   const handeToggleModal = (form: string) => {
     setShowForm(form);
@@ -35,6 +37,17 @@ function App() {
           >
             Uncontrolled form
           </button>
+        </div>
+        <div>
+          <p>There would be content from the form:</p>
+          <ul>
+            <ol>Name:{form.name}</ol>
+            <ol>Age:{form.age}</ol>
+            <ol>Email: {form.email}</ol>
+            <ol>gender: {form.gender}</ol>
+            <ol>Accepted terms? : {form.terms}</ol>
+            <ol>Country:{form.country}</ol>
+          </ul>
         </div>
       </div>
       {isModalOpen
