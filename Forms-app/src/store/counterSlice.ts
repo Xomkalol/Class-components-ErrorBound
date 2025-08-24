@@ -6,7 +6,7 @@ export interface FormState {
   age: string;
   email: string;
   password: string;
-  terms: string;
+  terms: boolean;
   gender: string;
   country: string;
 }
@@ -16,7 +16,7 @@ const initialState: FormState = {
   age: '',
   email: '',
   password: '',
-  terms: '',
+  terms: false,
   gender: '',
   country: '',
 };
