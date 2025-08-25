@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setFormData } from '../../store/counterSlice';
 
-export default function ControlForm() {
+export default function ControlForm({ closeButton }) {
   const [formData, setFormDataState] = useState({
     name: '',
     age: '',
@@ -23,7 +23,7 @@ export default function ControlForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(setFormData(formData));
-    console.log('Submit');
+    closeButton();
   };
 
   return (

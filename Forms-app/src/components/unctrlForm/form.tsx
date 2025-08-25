@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useAppDispatch } from '../../store/hooks';
 import { setFormData } from '../../store/counterSlice';
 
-export default function UnControlForm() {
+export default function UnControlForm({ closeButton }) {
   const nameRef = useRef<HTMLInputElement>(null);
   const ageRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -43,6 +43,7 @@ export default function UnControlForm() {
         country: country.current.value,
       };
       dispatch(setFormData(data));
+      closeButton();
     }
   };
 

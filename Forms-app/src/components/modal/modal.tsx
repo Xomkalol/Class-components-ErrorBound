@@ -1,9 +1,25 @@
+import { useEffect } from 'react';
 import ControlForm from '../ctrlForm/form';
 import UnControlForm from '../unctrlForm/form';
 
 export default function Modal({ handle, form }) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handle();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handle]);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4">
+    <div
+      onClick={handle}
+      className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4"
+    >
       <div className="fixed inset-0 bg-black bg-opacity-30 z-50 p-4 flex overflow-y-auto">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto my-auto flex flex-col">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -12,7 +28,11 @@ export default function Modal({ handle, form }) {
             </h2>
           </div>
           <div className="p-6 overflow-y-auto max-h-[70vh]">
-            {form === 'control' ? <ControlForm /> : <UnControlForm />}
+            {form === 'control' ? (
+              <ControlForm closeButton={handle} />
+            ) : (
+              <UnControlForm closeButton={handle} />
+            )}
           </div>
           <div className="flex justify-center pb-6 px-6">
             <button
