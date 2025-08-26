@@ -21,7 +21,10 @@ export default function Modal({ handle, form }) {
       className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4"
     >
       <div className="fixed inset-0 bg-black bg-opacity-30 z-50 p-4 flex overflow-y-auto">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto my-auto flex flex-col">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto my-auto flex flex-col"
+        >
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-gray-800 text-center">
               {form === 'control' ? 'Controlled Form' : 'Uncontrolled Form'}

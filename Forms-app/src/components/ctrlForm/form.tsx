@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setFormData } from '../../store/counterSlice';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { schema } from '../../yupFolder/yupUtil';
 
 export default function ControlForm({ closeButton }) {
   const [formData, setFormDataState] = useState({
@@ -14,20 +17,37 @@ export default function ControlForm({ closeButton }) {
   });
   const form = useAppSelector((state) => state.form);
   const dispatch = useAppDispatch();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      age: undefined,
+      email: '',
+      password: '',
+      confirmPassword: '',
+      terms: false,
+      gender: '',
+      country: '',
+    },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormDataState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const onSubmit = (event) => {
     event.preventDefault();
     dispatch(setFormData(formData));
     closeButton();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="text-center space-y-1">
         <h1 className="text-2xl font-bold text-gray-800">Controlled Form</h1>
         <p className="text-sm text-gray-500">Fill in your details</p>
@@ -45,6 +65,7 @@ export default function ControlForm({ closeButton }) {
           type="text"
           value={formData.name}
           onChange={handleChange}
+          //  {...register('name')}
           placeholder="Enter your name"
           className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
         />

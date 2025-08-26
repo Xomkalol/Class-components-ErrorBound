@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useAppSelector } from './store/hooks';
 
 function App() {
-  const [isModalOpen, setModal] = useState(true);
+  const [isModalOpen, setModal] = useState(false);
   const [showForm, setShowForm] = useState('');
   const form = useAppSelector((state) => state.form);
 
