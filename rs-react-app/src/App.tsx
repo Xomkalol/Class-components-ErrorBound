@@ -1,8 +1,22 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import Table from './components/table';
+
+export interface EmissionsData {
+  [countryName: string]: CountryData;
+}
+
+export interface CountryData {
+  iso_code: string;
+  data: AnnualData[];
+}
+
+export interface AnnualData {
+  [key: string]: number;
+}
 
 function App() {
-  const [data, setData] = useState();
+  const [data, setData] = useState<EmissionsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | unknown>(null);
 
@@ -36,8 +50,7 @@ function App() {
 
   return (
     <div>
-      {' '}
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <Table data={data} />
     </div>
   );
 }
