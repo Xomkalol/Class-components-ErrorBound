@@ -1,6 +1,7 @@
 import type { EmissionsData } from '../App';
+import TableList from './tableList/tableList';
 
-interface TableProps {
+export interface TableProps {
   data: EmissionsData | null;
 }
 
@@ -23,15 +24,14 @@ export default function Table({ data }: TableProps) {
       <tbody>
         {countries.map((countryName) => {
           const countryData = data[countryName];
-          const latestEntry = countryData.data[countryData.data.length - 1]; // последняя запись
+          const latestEntry = countryData.data[countryData.data.length - 1];
 
           return (
-            <tr key={countryName}>
-              <th scope="row">X</th>
-              <td>{countryName}</td>
-              <td>{latestEntry?.population?.toLocaleString() || 'N/A'}</td>
-              <td>{countryData.iso_code}</td>
-            </tr>
+            <TableList
+              countryName={countryName}
+              latestEntry={latestEntry}
+              countryData={countryData}
+            ></TableList>
           );
         })}
       </tbody>
