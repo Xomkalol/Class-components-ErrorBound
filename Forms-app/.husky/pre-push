@@ -1,0 +1,1 @@
+cd first-project && npx lint-staged 
